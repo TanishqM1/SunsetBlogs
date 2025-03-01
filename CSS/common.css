@@ -1,0 +1,55 @@
+/* Navigation Styles */
+nav {
+    background-color: #333;
+    padding: 15px;
+    margin-bottom: 30px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 15px;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: #555;
+    border-radius: 4px;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    margin-top: 50px;
+}
+
+footer p {
+    margin: 10px 0;
+}
+
+/* Common Container Styles */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Common Typography */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #333;
+    margin-bottom: 20px;
+} 
