@@ -1,12 +1,15 @@
+/* Reset some default styles */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f9f9f9;
 }
 
+/* Navbar Styling */
 nav {
     background-color: #333;
-    padding: 15px;
+    padding: 10px 0;
     text-align: center;
 }
 
@@ -14,19 +17,30 @@ nav a {
     color: white;
     text-decoration: none;
     margin: 0 15px;
+    font-size: 18px;
 }
 
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Profile Page Layout */
 .profile-container {
     display: flex;
-    min-height: 100vh;
+    max-width: 80%;
+    margin: 40px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    min-height: 70vh;
 }
 
-/* Sidebar Styles */
+/* Vertical Navigation */
 .sidebar {
     width: 250px;
-    background-color: #f4f4f4;
     padding: 20px;
-    min-height: 100vh;
+    border-right: 2px solid #ddd;
 }
 
 .sidebar ul {
@@ -34,104 +48,160 @@ nav a {
     padding: 0;
 }
 
-.sidebar ul li {
-    margin-bottom: 15px;
-}
-
-.sidebar ul li a {
-    text-decoration: none;
-    color: #333;
+.sidebar li {
+    padding: 12px;
     font-size: 18px;
+    cursor: pointer;
 }
 
-/* Main Profile Content */
+.sidebar li:hover {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+/* Main Profile Section */
 .profile-content {
     flex-grow: 1;
-    padding: 20px;
+    padding: 20px 40px;
 }
 
-.disclaimer {
-    color: gray;
+/* Section Title */
+.profile-content h1 {
+    font-size: 28px;
+    margin-bottom: 5px;
+}
+
+.profile-content p {
     font-size: 14px;
+    color: gray;
+    margin-bottom: 10px;
 }
 
+/* Horizontal Line */
 hr {
+    border: none;
+    height: 1px;
+    background-color: #ddd;
     margin: 15px 0;
 }
 
-/* Profile Info Styling */
+/* Profile Info Section */
 .profile-info {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Profile Row Styling */
+.profile-row {
+    display: flex;
     align-items: center;
-    padding: 10px 0;
-    font-size: 18px;
+    width: 100%;
+    justify-content: space-between;
+    padding: 12px 0;
 }
 
-.label {
+/* Label (Title) */
+.profile-label {
     font-weight: bold;
+    min-width: 180px;
 }
 
-.profile-name {
-    margin-left: 10px;
+/* Value (Updated Info) */
+.profile-value {
+    flex-grow: 1;
+    text-align: left;
+    padding-left: 30px;
 }
 
+/* Change Button */
 .change-btn {
     color: blue;
     cursor: pointer;
     text-decoration: underline;
+    margin-left: auto;
 }
 .change-btn:hover {
     color: darkblue;
 }
 
+/* Language and Date Section */
+.language-date-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-top: 10px;
+}
+
 /* Toggle Switch */
-.switch {
+.toggle-switch {
     position: relative;
-    display: inline-block;
     width: 40px;
     height: 20px;
 }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
+.toggle-switch input {
+    display: none;
 }
 
-.slider {
+.toggle-slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     background-color: #ccc;
-    transition: 0.4s;
     border-radius: 20px;
+    transition: 0.3s;
 }
 
-.slider:before {
-    position: absolute;
+.toggle-slider::before {
     content: "";
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: 0.4s;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    background: white;
     border-radius: 50%;
+    top: 1px;
+    left: 2px;
+    transition: 0.3s;
 }
 
-input:checked + .slider {
+.toggle-switch input:checked + .toggle-slider {
     background-color: #4CAF50;
 }
 
-input:checked + .slider:before {
-    transform: translateX(20px);
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(18px);
 }
 
-/* Spacer */
+/* Spacing */
 .spacer {
-    height: 20px;
+    height: 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .profile-container {
+        flex-direction: column;
+        max-width: 90%;
+        padding: 20px;
+    }
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #ddd;
+        padding-bottom: 15px;
+    }
+    .profile-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .profile-value {
+        padding-left: 0;
+    }
+    .change-btn {
+        margin-left: 0;
+        margin-top: 5px;
+    }
 }
