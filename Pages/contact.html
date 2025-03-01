@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Sunset Blogs</title>
+    
+</head>
+<body>
+
+    <!-- Placeholder for Navbar -->
+    <header>
+        <!-- Navigation bar will go here -->
+    </header>
+
+    <main>
+        <h1>Contact Us</h1>
+
+        <form action="submit_contact.php" method="POST">
+            <!-- First & Last Name Section -->
+            <div>
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" name="first_name" required>
+
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" name="last_name" required>
+            </div>
+
+            <!-- Question Section -->
+            <div>
+                <label for="question">Your Question:</label>
+                <textarea id="question" name="question" rows="5" required></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+
+</body>
+</html>
