@@ -1,26 +1,26 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form');
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+
     if (form) {
-        form.addEventListener('submit', function (event) {
-            // Your validation code here
-            const firstName = document.getElementById("first-name").value;
-            const lastName = document.getElementById("last-name").value;
-            const question = document.getElementById("question").value;
+        form.addEventListener("submit", function (event) {
+            const firstName = document.getElementById("first-name").value.trim();
+            const lastName = document.getElementById("last-name").value.trim();
+            const question = document.getElementById("question").value.trim();
 
-            if (!validateInput(firstName)) {
-                alert("First Name should only contain letters, numbers, and the symbol '@'.");
+            if (!validateName(firstName)) {
+                alert("First Name should only contain letters, numbers, and spaces.");
                 event.preventDefault();
                 return false;
             }
 
-            if (!validateInput(lastName)) {
-                alert("Last Name should only contain letters, numbers, and the symbol '@'.");
+            if (!validateName(lastName)) {
+                alert("Last Name should only contain letters, numbers, and spaces.");
                 event.preventDefault();
                 return false;
             }
 
-            if (!validateInput(question)) {
-                alert("Question should only contain letters, numbers, and the symbol '@'.");
+            if (!validateQuestion(question)) {
+                alert("Your question should only contain letters, numbers, spaces, and '@'.");
                 event.preventDefault();
                 return false;
             }
@@ -29,3 +29,14 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 });
+
+/**
+ * Validates name input (First Name & Last Name)
+ * Only allows letters (A-Z, a-z), numbers (0-9), and spaces
+ */
+function validateName(input) {
+    const regex = /^[a-zA-Z ]+$/;
+    return regex.test(input);
+}
+
+

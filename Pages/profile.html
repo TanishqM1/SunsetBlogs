@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Sunset Blogs</title>
+    <link rel="stylesheet" href="../CSS/reset.css">
+    <link rel="stylesheet" href="../CSS/profile_styling.css">
+    <script src="../JavaScript/profile_script.js" defer></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <a href="../index.html">Home</a>
+        <a href="../Pages/your-work.html">Your Work</a>
+        <a href="../Pages/profile.html">Profile</a>
+        <a href="../Pages/contact.html">Contact</a>
+    </nav>
+
+    <div class="profile-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <ul>
+                <li><a href="#">Profile</a></li>
+                <li><a href="#">Notifications</a></li>
+                <li><a href="#">Followers</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Profile Content -->
+        <main class="profile-content">
+            <h1>Profile</h1>
+            <p class="disclaimer">Your profile will be public.</p>
+            <hr>
+
+            <!-- Profile Information -->
+            <div class="profile-info">
+                <span class="label">Full Name:</span>
+                <span class="profile-name" id="profile-name">John Doe</span>
+                <span class="change-btn" onclick="changeField('profile-name', 'Enter your new profile name')">Change</span>
+            </div>
+            
+            <div class="profile-info">
+                <span class="label">Email Address:</span>
+                <span class="profile-name" id="email">john.doe@example.com</span>
+                <span class="change-btn" onclick="changeField('email', 'Enter your new email address')">Change</span>
+            </div>
+            
+            <div class="profile-info">
+                <span class="label">Title:</span>
+                <span class="profile-name" id="title">Blogger</span>
+                <span class="change-btn" onclick="changeField('title', 'Enter your new title')">Change</span>
+            </div>
+
+            <div class="spacer"></div> <!-- Adds space before the next section -->
+
+            <h2>Language and Date</h2>
+            <hr>
+
+            <div class="profile-info">
+                <span class="label">Language:</span>
+                <span class="profile-name" id="language">English</span>
+                <span class="change-btn" onclick="changeField('language', 'Enter your preferred language')">Change</span>
+            </div>
+
+            <div class="profile-info">
+                <span class="label">Date Format:</span>
+                <span class="profile-name" id="date-format">MM/DD/YYYY</span>
+                <span class="change-btn" onclick="changeField('date-format', 'Enter your preferred date format')">Change</span>
+            </div>
+
+            <div class="profile-info">
+                <span class="label">Automatic Timezone:</span>
+                <label class="switch">
+                    <input type="checkbox" id="timezone-toggle" checked>
+                    <span class="slider round"></span>
+                </label>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
