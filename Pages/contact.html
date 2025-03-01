@@ -4,38 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Sunset Blogs</title>
-    
+    <link rel="stylesheet" href="CSS/reset.css">
+    <link rel="stylesheet" href="CSS/contact_styling.css">
 </head>
 <body>
 
-    <!-- Placeholder for Navbar -->
-    <header>
-        <!-- Navigation bar will go here -->
-    </header>
+    
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="Pages/your-work.html">Your Work</a>
+        <a href="Pages/profile.html">Profile</a>
+        <a href="Pages/contact.html">Contact</a>
+    </nav>
 
-    <main>
+    <!-- Placeholder for Image -->
+    <div class="image-placeholder">
+        <p>Image Placeholder</p>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="contact-container">
         <h1>Contact Us</h1>
-
-        <form action="submit_contact.php" method="POST">
-            <!-- First & Last Name Section -->
-            <div>
-                <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first_name" required>
-
-                <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last_name" required>
+        <form>
+            <div class="name-fields">
+                <div class="input-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="first-name" required>
+                </div>
+                <div class="input-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="last-name" required>
+                </div>
             </div>
-
-            <!-- Question Section -->
-            <div>
-                <label for="question">Your Question:</label>
-                <textarea id="question" name="question" rows="5" required></textarea>
+            <div class="input-group">
+                <label for="question">Your Question</label>
+                <textarea id="question" name="question" rows="4" required></textarea>
             </div>
-
-            <!-- Submit Button -->
             <button type="submit">Submit</button>
         </form>
-    </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
+        <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
+    </footer>
 
 </body>
 </html>
