@@ -1,0 +1,203 @@
+/* Basic reset and common styles are in common.css */
+
+/* Blog Header Styles */
+.blog-header {
+    margin-bottom: 30px;
+}
+
+.blog-title {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.blog-meta {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+}
+
+.blog-meta a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.blog-meta a:hover {
+    text-decoration: underline;
+}
+
+.blog-image {
+    margin-bottom: 20px;
+}
+
+.image-placeholder {
+    background-color: #f0f0f0;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 1.2em;
+    border-radius: 4px;
+}
+
+/* Blog Content Styles */
+.blog-content {
+    line-height: 1.8;
+    margin-bottom: 40px;
+}
+
+.blog-content h2 {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 1.8em;
+}
+
+.blog-content p {
+    margin-bottom: 20px;
+}
+
+/* Comments Section Styles */
+.comments-section {
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+}
+
+.comments-section h2 {
+    margin-bottom: 20px;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.share-button img {
+    width: 24px;
+    height: 24px;
+}
+
+.comment-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.comment-author {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    background-color: #f0f0f0;
+}
+
+.author-details h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.comment-date {
+    color: #666;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+.comment-text p {
+    margin-bottom: 15px;
+}
+
+.comment-text p:last-child {
+    margin-bottom: 0;
+}
+
+/* Add Comment Form Styles */
+.add-comment-section {
+    margin-top: 40px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.add-comment-section h2 {
+    margin-bottom: 20px;
+}
+
+.comment-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-input {
+    margin-bottom: 20px;
+}
+
+.comment-input textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 16px;
+}
+
+.comment-info {
+    display: grid;
+    gap: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.submit-comment {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+    align-self: flex-start;
+}
+
+.submit-comment:hover {
+    background-color: #0056b3;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+    .comment-info {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .form-group:last-of-type {
+        grid-column: span 2;
+    }
+    
+    .submit-comment {
+        grid-column: span 2;
+    }
+}
