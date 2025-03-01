@@ -3,9 +3,80 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Blog Post</title>
-  <!-- Link to external CSS -->
-  <link rel="stylesheet" href="create-blog.css" />
+  <title>Create Blog Post - Sunset Blogs</title>
+  <link rel="stylesheet" href="../CSS/common.css">
+  <style>
+    .blog-form {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="url"],
+    input[type="file"],
+    textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .subtitle-group {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .btn-add-subtitle {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .btn-submit {
+      background-color: #2196F3;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-submit:hover {
+      background-color: #1976D2;
+    }
+  </style>
 
   <script>
     // JavaScript function to dynamically add more subtitles and content fields
@@ -49,6 +120,13 @@
   </script>
 </head>
 <body>
+  <nav>
+    <a href="../index.html">Home</a>
+    <a href="your-work.html">Your Work</a>
+    <a href="profile.html">Profile</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+
   <div class="container">
     <!-- Header section -->
     <header class="header">
@@ -60,18 +138,18 @@
       <!-- Blog Title -->
       <div class="form-group">
         <label for="blogTitle">Blog Title</label>
-        <input type="text" id="blogTitle" name="blogTitle" placeholder="Enter your blog title here" />
+        <input type="text" id="blogTitle" name="blogTitle" placeholder="Enter your blog title here" required />
       </div>
 
       <!-- Date & Posted By -->
       <div class="form-row">
         <div class="form-group">
           <label for="blogDate">Date</label>
-          <input type="date" id="blogDate" name="blogDate" />
+          <input type="date" id="blogDate" name="blogDate" required />
         </div>
         <div class="form-group">
           <label for="blogAuthor">Posted By</label>
-          <input type="text" id="blogAuthor" name="blogAuthor" placeholder="Author name" />
+          <input type="text" id="blogAuthor" name="blogAuthor" placeholder="Author name" required />
         </div>
       </div>
 
@@ -107,7 +185,7 @@
       </div>
 
       <div class="form-group">
-        <label for="mediaLinks">Add Media Link (Facebook, Instagram, Twitter, etc.)</label>
+        <label for="mediaLinks">Add Media Link</label>
         <input type="url" id="mediaLinks" name="mediaLinks" placeholder="Paste social media link here" />
       </div>
 
@@ -129,7 +207,7 @@
 
       <div class="form-group">
         <label for="blogCategories">Categories</label>
-        <input type="text" id="blogCategories" name="blogCategories" placeholder="Enter comma-separated categories (e.g., Technology, Tutorials)" />
+        <input type="text" id="blogCategories" name="blogCategories" placeholder="Enter comma-separated categories" />
       </div>
 
       <!-- Submit button -->
@@ -138,5 +216,10 @@
       </div>
     </form>
   </div>
+
+  <footer>
+    <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
+    <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
+  </footer>
 </body>
 </html>
