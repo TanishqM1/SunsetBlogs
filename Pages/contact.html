@@ -6,6 +6,7 @@
     <title>Contact Us - Sunset Blogs</title>
     <link rel="stylesheet" href="../CSS/reset.css">
     <link rel="stylesheet" href="../CSS/contact_styling.css">
+    <script src="../JavaScript/Contact_Validate.js" defer></script> <!-- Link to external JavaScript file -->
 </head>
 <body>
 
@@ -24,7 +25,7 @@
     <!-- Contact Form -->
     <div class="contact-container">
         <h1>Contact Us</h1>
-        <form>
+        <form id="contact-form">
             <div class="name-fields">
                 <div class="input-group">
                     <label for="first-name">First Name</label>
@@ -35,7 +36,7 @@
                     <input type="text" id="last-name" name="last-name" required>
                 </div>
             </div>
-            <div class="input-group">
+            <div class="input-group question-group">
                 <label for="question">Your Question</label>
                 <textarea id="question" name="question" rows="4" required></textarea>
             </div>
