@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Work - Sunset Blogs</title>
-    <link rel="stylesheet" href="../CSS/common.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
     <style>
         .container {
             max-width: 1200px;
@@ -16,43 +16,77 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .new-post-btn {
-            padding: 10px 20px;
-            background-color: #fff;
-            border: 2px solid #000;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
             border-radius: 25px;
-            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .new-post-btn:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
         }
         
         .post-card {
-            border: 1px solid #000;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
+            background-color: white;
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .post-card:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .comment-card {
-            border: 1px solid #000;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 4px;
+            background-color: var(--light-color);
+            border: 2px solid var(--border-color);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
         }
         
         .date {
-            color: #666;
+            color: var(--dark-color);
             font-size: 0.9em;
+            opacity: 0.7;
         }
         
         .sections {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 40px;
+        }
+
+        section h2 {
+            color: var(--dark-color);
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .post-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .post-card p {
+            color: var(--dark-color);
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -77,8 +111,10 @@
             <div class="left-section">
                 <section class="your-posts">
                     <div class="post-card">
-                        <h3><a href="view-blog.html">AI and the Future of Content Creation</a></h3>
-                        <p>Exploring how artificial intelligence is revolutionizing the way we create and consume content</p>
+                        <a href="view-blog.html" style="text-decoration: none;">
+                            <h3>AI and the Future of Content Creation</h3>
+                            <p>Exploring how artificial intelligence is revolutionizing the way we create and consume content</p>
+                        </a>
                     </div>
 
                     <div class="post-card">

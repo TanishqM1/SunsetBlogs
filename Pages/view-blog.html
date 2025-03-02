@@ -4,8 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI and the Future of Content Creation - Sunset Blogs</title>
-    <link rel="stylesheet" href="../CSS/common.css">
-    <link rel="stylesheet" href="../CSS/view-blog.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+    <style>
+        .blog-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .blog-title {
+            color: var(--dark-color);
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .blog-meta {
+            color: var(--dark-color);
+            opacity: 0.8;
+            font-size: 0.9em;
+            display: flex;
+            gap: 20px;
+        }
+
+        .blog-content {
+            line-height: 1.8;
+            color: var(--dark-color);
+        }
+
+        .blog-content h2 {
+            color: var(--primary-color);
+            margin: 30px 0 15px;
+            font-size: 1.8em;
+        }
+
+        .blog-content p {
+            margin-bottom: 20px;
+        }
+
+        .blog-tags {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+
+        .blog-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .like-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .share-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -16,91 +108,66 @@
     </nav>
 
     <div class="container">
-        <!-- Blog Header Section -->
-        <header class="blog-header">
-            <h1 class="blog-title">AI and the Future of Content Creation</h1>
-            <div class="blog-meta">
-                <span class="blog-date">July 1, 2024</span>
-                <span class="blog-author">Posted by Mike in <a href="#">AI</a>, <a href="#">Creativity</a></span>
-            </div>
-            <div class="blog-image">
-                <!-- Placeholder for blog image -->
-                <div class="image-placeholder">Blog Image Placeholder</div>
-            </div>
-        </header>
-
-        <!-- Blog Content Section -->
-        <article class="blog-content">
-            <p>Artificial Intelligence (AI) is revolutionizing various industries, and content creation is no exception. This blog explores the impact of AI on content creation and what the future holds.</p>
-            
-            <h2>The Current Landscape</h2>
-            <p>Today, AI tools assist writers, designers, and marketers in numerous ways. Examples include Grammarly, which helps with grammar checking, and Jasper, known for content generation. These AI algorithms analyze vast amounts of data to provide valuable insights and identify trends, making the content creation process more efficient and data-driven.</p>
-            
-            <h2>Benefits of AI in Content Creation</h2>
-            <p>AI offers several benefits to content creation. It improves efficiency by generating content quickly, saving time for creativity. It ensures consistency in tone and style across various pieces, maintaining a unified brand voice. Personalization is another significant advantage, as AI helps create tailored content for different audience segments. Additionally, AI tools improve SEO strategies by analyzing keywords and trends, leading to better visibility and reach.</p>
-            
-            <h2>Challenges and Concerns</h2>
-            <p>Despite the benefits, there are challenges and concerns associated with AI in content creation. Quality control is a major issue, as ensuring AI-generated content meets high standards can be difficult. Creativity remains a human forte, and it often lacks the nuance and originality that human creators bring. Ethical concerns, such as plagiarism and the responsible use of AI, also pose challenges. The potential impact on jobs with increased automation is another consideration.</p>
-            
-            <h2>Future Predictions</h2>
-            <p>Looking ahead, we can expect more sophisticated AI tools to emerge, offering even greater assistance to content creators. AI will likely integrate with augmented and virtual reality, creating immersive content experiences. Collaborative AI, where AI works alongside humans, enhancing rather than replacing human creativity, is another anticipated development. Enhanced personalization, driven by detailed user data, will result in hyper-personalized content that resonates deeply with individual preferences.</p>
-            
-            <h2>Conclusion</h2>
-            <p>AI is set to transform the content creation landscape. While challenges exist, the benefits and future possibilities are immense. Embracing AI can lead to more efficient, personalized, and innovative content creation, opening new avenues for creativity and engagement.</p>
-            
-            <p>Interested in how AI can enhance your content creation process? Subscribe to our newsletter for the latest updates and insights.</p>
-        </article>
-
-        <!-- Comments Section -->
-        <section class="comments-section">
-            <h2>Comments</h2>
-            
-            <div class="share-buttons">
-                <a href="#" class="share-button"><img src="../images/facebook-icon.png" alt="Facebook"></a>
-                <a href="#" class="share-button"><img src="../images/twitter-icon.png" alt="Twitter"></a>
-                <a href="#" class="share-button"><img src="../images/linkedin-icon.png" alt="LinkedIn"></a>
-                <a href="#" class="share-button"><img src="../images/share-icon.png" alt="Share"></a>
-            </div>
-            
-            <div class="comment-card">
-                <div class="comment-author">
-                    <img src="../images/avatar-placeholder.png" alt="User Avatar" class="avatar">
-                    <div class="author-details">
-                        <h3>Paul</h3>
-                        <p class="comment-date">commented 2 days ago</p>
-                    </div>
-                </div>
-                <div class="comment-text">
-                    <p>This article is incredibly insightful! AI's impact on content creation. Tools like Grammarly and Jasper streamline writing and ensure consistency, but quality control and the human touch in creativity remain challenges. Ethical concerns, such as plagiarism and job displacement, are also significant.</p>
-                    <p>However, the collaborative potential of AI is exciting. Enhancing human creativity and integrating AI with AR/VR could lead to innovative content experiences. While there are concerns, the future possibilities are immense. I'm looking forward to more insights in your newsletter!</p>
+        <div class="blog-container">
+            <div class="blog-header">
+                <h1 class="blog-title">AI and the Future of Content Creation</h1>
+                <div class="blog-meta">
+                    <span>By John Doe</span>
+                    <span>Published on March 15, 2024</span>
+                    <span>5 min read</span>
                 </div>
             </div>
-            
-            <!-- Add Comment Form -->
-            <div class="add-comment-section">
-                <h2>Leave a Comment</h2>
-                <form class="comment-form">
-                    <div class="comment-input">
-                        <textarea placeholder="Write your comment here..."></textarea>
-                    </div>
-                    <div class="comment-info">
-                        <div class="form-group">
-                            <label for="comment-name">Name</label>
-                            <input type="text" id="comment-name" name="comment-name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="comment-email">Email</label>
-                            <input type="email" id="comment-email" name="comment-email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="comment-website">Website</label>
-                            <input type="url" id="comment-website" name="comment-website">
-                        </div>
-                        <button type="submit" class="submit-comment">Submit Comment</button>
-                    </div>
-                </form>
+
+            <div class="blog-content">
+                <p>
+                    The landscape of content creation is undergoing a revolutionary transformation, 
+                    driven by rapid advancements in artificial intelligence. As we stand at the 
+                    intersection of human creativity and machine learning, it's crucial to understand 
+                    how AI is reshaping the way we create and consume content.
+                </p>
+
+                <h2>The Rise of AI in Content Creation</h2>
+                <p>
+                    Artificial intelligence has evolved from a mere concept to a powerful tool that's 
+                    now integral to various aspects of content creation. From automated writing 
+                    assistance to intelligent image generation, AI is empowering creators with new 
+                    capabilities while raising important questions about the future of creative work.
+                </p>
+
+                <h2>Impact on Different Content Types</h2>
+                <p>
+                    The influence of AI extends across multiple content formats. In written content, 
+                    natural language processing is helping writers craft more engaging articles. 
+                    In visual media, AI-powered tools are revolutionizing image and video creation. 
+                    The audio landscape is seeing AI-driven innovations in music composition and 
+                    voice synthesis.
+                </p>
+
+                <h2>The Human Element</h2>
+                <p>
+                    While AI brings powerful capabilities to content creation, the human element 
+                    remains irreplaceable. Creativity, emotional intelligence, and cultural 
+                    understanding continue to be uniquely human traits that give content its soul. 
+                    The future lies in finding the right balance between AI assistance and human creativity.
+                </p>
             </div>
-        </section>
+
+            <div class="blog-tags">
+                <span class="tag">AI</span>
+                <span class="tag">Content Creation</span>
+                <span class="tag">Technology</span>
+                <span class="tag">Future</span>
+            </div>
+
+            <div class="blog-actions">
+                <button class="action-btn like-btn">
+                    <span>❤</span> Like
+                </button>
+                <button class="action-btn share-btn">
+                    <span>↗</span> Share
+                </button>
+            </div>
+        </div>
     </div>
 
     <footer>
