@@ -34,8 +34,10 @@ body {
 
 /* Blog form */
 .blog-form {
-  display: flex;
-  flex-direction: column;
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Form groups and labels */
@@ -52,9 +54,12 @@ body {
 
 /* Subtitle groups */
 .subtitle-group {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  padding: 20px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--light-color);
+  position: relative;
 }
 
 .subtitle-group label {
@@ -65,9 +70,9 @@ body {
 
 /* Form rows for multiple items side by side */
 .form-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
-  margin-bottom: 15px;
 }
 
 .form-row .form-group {
@@ -93,31 +98,61 @@ textarea {
 
 /* Add Another Subtitle button */
 .btn-add-subtitle {
-  align-self: flex-start;
-  background-color: #28a745;
-  color: #ffffff;
-  padding: 10px 14px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 15px;
+  background-color: var(--secondary-color);
+  color: white;
+  margin-bottom: 30px;
 }
 
 .btn-add-subtitle:hover {
-  background-color: #218838;
+  background-color: #45b7af;
 }
 
 /* Submit button */
 .btn-submit {
-  background-color: #007BFF;
-  color: #ffffff;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  font-size: 1em;
-  cursor: pointer;
+  background-color: var(--primary-color);
+  color: white;
 }
 
 .btn-submit:hover {
-  background-color: #0056b3;
+  background-color: #ff5252;
+}
+
+.btn-delete-subtitle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-delete-subtitle:hover {
+  background-color: #ff5252;
+  transform: scale(1.1);
+}
+
+.subtitle-header {
+  margin-bottom: 15px;
+}
+
+.subtitle-content {
+  margin-bottom: 15px;
+}
+
+.subtitle-group:first-child .btn-delete-subtitle {
+  display: none;
+}
+
+select {
+  background-color: white;
+  cursor: pointer;
 }

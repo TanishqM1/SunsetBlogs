@@ -157,6 +157,49 @@
         .slider.round:before {
             border-radius: 50%;
         }
+
+        /* Title dropdown styling */
+        select.title-select {
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            color: var(--dark-color);
+            font-size: 1em;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        select.title-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Email validation styling */
+        .invalid-feedback {
+            color: var(--primary-color);
+            font-size: 0.85em;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .profile-input {
+            padding: 5px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1em;
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        .profile-input.invalid {
+            border-color: var(--primary-color);
+        }
+
+        .profile-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
     </style>
     <script src="../JavaScript/profile_script.js" defer></script>
 </head>
@@ -185,20 +228,29 @@
 
                 <div class="profile-info">
                     <span class="label">Full Name:</span>
-                    <span class="profile-name" id="profile-name">John Doe</span>
-                    <span class="change-btn" onclick="changeField('profile-name', 'Enter your new profile name')">Change</span>
+                    <input type="text" class="profile-input" id="profile-name" value="John Doe" placeholder="Enter your full name">
+                    <span class="change-btn" onclick="validateAndSaveName()">Save</span>
+                    <div class="invalid-feedback" id="name-feedback">Name cannot be empty.</div>
                 </div>
                 
                 <div class="profile-info">
                     <span class="label">Email Address:</span>
-                    <span class="profile-name" id="email">john.doe@example.com</span>
-                    <span class="change-btn" onclick="changeField('email', 'Enter your new email address')">Change</span>
+                    <input type="email" class="profile-input" id="email" value="john.doe@example.com">
+                    <span class="change-btn" onclick="validateAndSaveEmail()">Save</span>
+                    <div class="invalid-feedback" id="email-feedback">Please enter a valid email address.</div>
                 </div>
                 
                 <div class="profile-info">
                     <span class="label">Title:</span>
-                    <span class="profile-name" id="title">Blogger</span>
-                    <span class="change-btn" onclick="changeField('title', 'Enter your new title')">Change</span>
+                    <select class="title-select" id="title">
+                        <option value="">Select a title</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Dr.">Dr.</option>
+                        <option value="Prof.">Prof.</option>
+                        <option value="Mx.">Mx.</option>
+                    </select>
                 </div>
 
                 <div class="spacer"></div>
@@ -233,5 +285,57 @@
         <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
         <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
     </footer>
+    <script>
+        // Email validation function
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email.toLowerCase());
+        }
+
+        function validateAndSaveEmail() {
+            const emailInput = document.getElementById('email');
+            const feedback = document.getElementById('email-feedback');
+            
+            if (validateEmail(emailInput.value)) {
+                emailInput.classList.remove('invalid');
+                feedback.style.display = 'none';
+                // Here you would typically save the email to your backend
+                alert('Email updated successfully!');
+            } else {
+                emailInput.classList.add('invalid');
+                feedback.style.display = 'block';
+            }
+        }
+
+        // Name validation function
+        function validateAndSaveName() {
+            const nameInput = document.getElementById('profile-name');
+            const feedback = document.getElementById('name-feedback');
+            const name = nameInput.value.trim();
+            
+            if (name.length > 0) {
+                nameInput.classList.remove('invalid');
+                feedback.style.display = 'none';
+                // Here you would typically save the name to your backend
+                alert('Name updated successfully!');
+            } else {
+                nameInput.classList.add('invalid');
+                feedback.style.display = 'block';
+            }
+        }
+
+        // Title dropdown handling
+        document.getElementById('title').addEventListener('change', function() {
+            // Here you would typically save the title to your backend
+            alert('Title updated to: ' + this.value);
+        });
+
+        // Initialize the title dropdown with the current value
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleSelect = document.getElementById('title');
+            // Set the current title (you would typically get this from your backend)
+            titleSelect.value = 'Mr.'; // Example default value
+        });
+    </script>
 </body>
 </html>
