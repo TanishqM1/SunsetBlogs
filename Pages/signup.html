@@ -4,9 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Sunset Blogs</title>
-    <link rel="stylesheet" href="../CSS/common.css">
-    <link rel="stylesheet" href="../CSS/signup.css">
-    <script src="../JavaScript/Signup_Validate.js" defer></script>
+    <link rel="stylesheet" href="../CSS/theme.css">
+    <style>
+        .signup-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .page-title {
+            color: var(--dark-color);
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .signup-form .form-group {
+            margin-bottom: 20px;
+        }
+
+        .password-requirements {
+            font-size: 0.9em;
+            color: var(--dark-color);
+            opacity: 0.8;
+            margin-top: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .terms {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: var(--light-color);
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: var(--dark-color);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+        }
+
+        .checkbox-group label {
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .btn-signup {
+            background-color: var(--primary-color);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1em;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-signup:hover {
+            background-color: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--dark-color);
+        }
+
+        .login-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        input:invalid {
+            border-color: var(--primary-color);
+        }
+
+        input:valid {
+            border-color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -18,21 +118,56 @@
 
     <div class="container">
         <div class="signup-container">
-            <h1>Sign Up</h1>
-            <form id="signup-form">
+            <h1 class="page-title">Create Your Account</h1>
+            <form class="signup-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="required">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="required">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="email" class="required">Email Address</label>
                     <input type="email" id="email" name="email" required>
-                    <span class="error-message" id="email-error"></span>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
-                    <span class="error-message" id="password-error"></span>
+                    <label for="username" class="required">Username</label>
+                    <input type="text" id="username" name="username" required>
                 </div>
-                
-                <button type="submit" class="btn-signup">Sign Up</button>
+
+                <div class="form-group">
+                    <label for="password" class="required">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <p class="password-requirements">
+                        Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword" class="required">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+
+                <div class="terms">
+                    By creating an account, you agree to our Terms of Service and Privacy Policy.
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Subscribe to our newsletter for updates and featured content</label>
+                </div>
+
+                <button type="submit" class="btn-signup">Create Account</button>
+
+                <p class="login-link">
+                    Already have an account? <a href="login.html">Log in</a>
+                </p>
             </form>
         </div>
     </div>
@@ -41,5 +176,6 @@
         <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
         <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
     </footer>
+    <script src="../JavaScript/signup-validation.js"></script>
 </body>
 </html>

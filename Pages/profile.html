@@ -4,86 +4,234 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Sunset Blogs</title>
-    <link rel="stylesheet" href="../CSS/reset.css">
-    <link rel="stylesheet" href="../CSS/profile_styling.css">
+    <link rel="stylesheet" href="../CSS/theme.css">
+    <style>
+        .profile-container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 30px;
+        }
+
+        .sidebar {
+            background-color: var(--light-color);
+            padding: 20px;
+            border-radius: 8px;
+            height: fit-content;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 10px;
+            display: block;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .profile-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-info:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            width: 150px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .profile-name {
+            flex: 1;
+            color: var(--dark-color);
+        }
+
+        .change-btn {
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .change-btn:hover {
+            background-color: var(--light-color);
+        }
+
+        .spacer {
+            height: 30px;
+        }
+
+        h1, h2 {
+            color: var(--dark-color);
+            margin-bottom: 20px;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 20px 0;
+        }
+
+        .disclaimer {
+            color: var(--dark-color);
+            opacity: 0.7;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        /* Switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+    </style>
     <script src="../JavaScript/profile_script.js" defer></script>
 </head>
 <body>
-
-    <!-- Navbar -->
     <nav>
         <a href="../index.html">Home</a>
-        <a href="../Pages/your-work.html">Your Work</a>
-        <a href="../Pages/profile.html">Profile</a>
-        <a href="../Pages/contact.html">Contact</a>
+        <a href="your-work.html">Your Work</a>
+        <a href="profile.html">Profile</a>
+        <a href="contact.html">Contact</a>
     </nav>
 
-    <div class="profile-container">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <ul>
-                <li><a href="#">Profile</a></li>
-                <li><a href="#">Notifications</a></li>
-                <li><a href="#">Followers</a></li>
-            </ul>
-        </aside>
+    <div class="container">
+        <div class="profile-container">
+            <aside class="sidebar">
+                <ul>
+                    <li><a href="#">Profile</a></li>
+                    <li><a href="#">Notifications</a></li>
+                    <li><a href="#">Followers</a></li>
+                </ul>
+            </aside>
 
-        <!-- Main Profile Content -->
-        <main class="profile-content">
-            <h1>Profile</h1>
-            <p class="disclaimer">Your profile will be public.</p>
-            <hr>
+            <main class="profile-content">
+                <h1>Profile</h1>
+                <p class="disclaimer">Your profile will be public.</p>
+                <hr>
 
-            <!-- Profile Information -->
-            <div class="profile-info">
-                <span class="label">Full Name:</span>
-                <span class="profile-name" id="profile-name">John Doe</span>
-                <span class="change-btn" onclick="changeField('profile-name', 'Enter your new profile name')">Change</span>
-            </div>
-            
-            <div class="profile-info">
-                <span class="label">Email Address:</span>
-                <span class="profile-name" id="email">john.doe@example.com</span>
-                <span class="change-btn" onclick="changeField('email', 'Enter your new email address')">Change</span>
-            </div>
-            
-            <div class="profile-info">
-                <span class="label">Title:</span>
-                <span class="profile-name" id="title">Blogger</span>
-                <span class="change-btn" onclick="changeField('title', 'Enter your new title')">Change</span>
-            </div>
+                <div class="profile-info">
+                    <span class="label">Full Name:</span>
+                    <span class="profile-name" id="profile-name">John Doe</span>
+                    <span class="change-btn" onclick="changeField('profile-name', 'Enter your new profile name')">Change</span>
+                </div>
+                
+                <div class="profile-info">
+                    <span class="label">Email Address:</span>
+                    <span class="profile-name" id="email">john.doe@example.com</span>
+                    <span class="change-btn" onclick="changeField('email', 'Enter your new email address')">Change</span>
+                </div>
+                
+                <div class="profile-info">
+                    <span class="label">Title:</span>
+                    <span class="profile-name" id="title">Blogger</span>
+                    <span class="change-btn" onclick="changeField('title', 'Enter your new title')">Change</span>
+                </div>
 
-            <div class="spacer"></div> <!-- Adds space before the next section -->
+                <div class="spacer"></div>
 
-            <h2>Language and Date</h2>
-            <hr>
+                <h2>Language and Date</h2>
+                <hr>
 
-            <div class="profile-info">
-                <span class="label">Language:</span>
-                <span class="profile-name" id="language">English</span>
-                <span class="change-btn" onclick="changeField('language', 'Enter your preferred language')">Change</span>
-            </div>
+                <div class="profile-info">
+                    <span class="label">Language:</span>
+                    <span class="profile-name" id="language">English</span>
+                    <span class="change-btn" onclick="changeField('language', 'Enter your preferred language')">Change</span>
+                </div>
 
-            <div class="profile-info">
-                <span class="label">Date Format:</span>
-                <span class="profile-name" id="date-format">MM/DD/YYYY</span>
-                <span class="change-btn" onclick="changeField('date-format', 'Enter your preferred date format')">Change</span>
-            </div>
+                <div class="profile-info">
+                    <span class="label">Date Format:</span>
+                    <span class="profile-name" id="date-format">MM/DD/YYYY</span>
+                    <span class="change-btn" onclick="changeField('date-format', 'Enter your preferred date format')">Change</span>
+                </div>
 
-            <div class="profile-info">
-                <span class="label">Automatic Timezone:</span>
-                <label class="switch">
-                    <input type="checkbox" id="timezone-toggle" checked>
-                    <span class="slider round"></span>
-                </label>
-            </div>
-        </main>
+                <div class="profile-info">
+                    <span class="label">Automatic Timezone:</span>
+                    <label class="switch">
+                        <input type="checkbox" id="timezone-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </main>
+        </div>
     </div>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
+        <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
     </footer>
-
 </body>
 </html>

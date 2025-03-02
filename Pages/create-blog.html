@@ -4,17 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Blog Post - Sunset Blogs</title>
-  <link rel="stylesheet" href="../CSS/common.css">
+  <link rel="stylesheet" href="../CSS/theme.css">
   <style>
     .blog-form {
-      background-color: #fff;
-      padding: 20px;
+      background-color: white;
+      padding: 30px;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-group {
-      margin-bottom: 20px;
     }
 
     .form-row {
@@ -23,101 +19,82 @@
       gap: 20px;
     }
 
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="date"],
-    input[type="url"],
-    input[type="file"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
-    }
-
-    textarea {
-      min-height: 100px;
-      resize: vertical;
-    }
-
     .subtitle-group {
       margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
+      padding: 20px;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--light-color);
+      position: relative;
+    }
+
+    .btn-delete-subtitle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-delete-subtitle:hover {
+      background-color: #ff5252;
+      transform: scale(1.1);
+    }
+
+    .subtitle-header {
+      margin-bottom: 15px;
+    }
+
+    .subtitle-content {
+      margin-bottom: 15px;
+    }
+
+    .subtitle-group:first-child .btn-delete-subtitle {
+      display: none;
     }
 
     .btn-add-subtitle {
-      background-color: #4CAF50;
+      background-color: var(--secondary-color);
       color: white;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .btn-add-subtitle:hover {
+      background-color: #45b7af;
     }
 
     .btn-submit {
-      background-color: #2196F3;
+      background-color: var(--primary-color);
       color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
     }
 
     .btn-submit:hover {
-      background-color: #1976D2;
+      background-color: #ff5252;
+    }
+
+    select {
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .page-title {
+      color: var(--dark-color);
+      font-size: 2em;
+      margin-bottom: 30px;
+      text-align: center;
     }
   </style>
-
-  <script>
-    // JavaScript function to dynamically add more subtitles and content fields
-    function addSubtitle() {
-      const container = document.getElementById('subtitle-container');
-
-      // Create a new .subtitle-group div
-      const newSubtitleGroup = document.createElement('div');
-      newSubtitleGroup.classList.add('subtitle-group');
-
-      // Subtitle label
-      const subtitleLabel = document.createElement('label');
-      subtitleLabel.textContent = 'Subtitle';
-
-      // Subtitle input
-      const subtitleInput = document.createElement('input');
-      subtitleInput.type = 'text';
-      // Using a bracket notation ([]) so multiple subtitles can be captured as an array
-      subtitleInput.name = 'subtitles[]';
-      subtitleInput.placeholder = 'Enter your subtitle';
-
-      // Content label
-      const contentLabel = document.createElement('label');
-      contentLabel.textContent = 'Content';
-
-      // Content textarea
-      const contentTextarea = document.createElement('textarea');
-      contentTextarea.name = 'subtitles-content[]';
-      contentTextarea.rows = 4;
-      contentTextarea.placeholder = 'Write content for this subtitle';
-
-      // Append elements in order
-      newSubtitleGroup.appendChild(subtitleLabel);
-      newSubtitleGroup.appendChild(subtitleInput);
-      newSubtitleGroup.appendChild(contentLabel);
-      newSubtitleGroup.appendChild(contentTextarea);
-
-      // Add the new subtitle group to the container
-      container.appendChild(newSubtitleGroup);
-    }
-  </script>
+  <script src="../JavaScript/blog-validation.js"></script>
 </head>
 <body>
   <nav>
@@ -128,57 +105,37 @@
   </nav>
 
   <div class="container">
-    <!-- Header section -->
-    <header class="header">
-      <h1 class="page-title">Create a New Blog Post</h1>
-    </header>
-
-    <!-- Form to create blog post -->
+    <h1 class="page-title">Create a New Blog Post</h1>
     <form class="blog-form">
-      <!-- Blog Title -->
       <div class="form-group">
-        <label for="blogTitle">Blog Title</label>
+        <label for="blogTitle" class="required">Blog Title</label>
         <input type="text" id="blogTitle" name="blogTitle" placeholder="Enter your blog title here" required />
       </div>
 
-      <!-- Date & Posted By -->
       <div class="form-row">
         <div class="form-group">
-          <label for="blogDate">Date</label>
+          <label for="blogDate" class="required">Date</label>
           <input type="date" id="blogDate" name="blogDate" required />
         </div>
         <div class="form-group">
-          <label for="blogAuthor">Posted By</label>
+          <label for="blogAuthor" class="required">Posted By</label>
           <input type="text" id="blogAuthor" name="blogAuthor" placeholder="Author name" required />
         </div>
       </div>
 
-      <!-- Subtitles container (initially contains one subtitle group) -->
       <div id="subtitle-container">
         <div class="subtitle-group">
-          <label for="firstSubtitle">Subtitle</label>
-          <input
-            type="text"
-            id="firstSubtitle"
-            name="subtitles[]"
-            placeholder="Enter your subtitle"
-          />
-          <label for="firstContent">Content</label>
-          <textarea
-            id="firstContent"
-            name="subtitles-content[]"
-            rows="4"
-            placeholder="Write content for this subtitle"
-          ></textarea>
+          <label for="firstSubtitle" class="required">Subtitle</label>
+          <input type="text" id="firstSubtitle" name="subtitles[]" placeholder="Enter your subtitle" required />
+          <label for="firstContent" class="required">Content</label>
+          <textarea id="firstContent" name="subtitles-content[]" rows="4" placeholder="Write content for this subtitle" required></textarea>
         </div>
       </div>
 
-      <!-- Button to add more subtitles -->
       <button type="button" class="btn-add-subtitle" onclick="addSubtitle()">
         Add Another Subtitle
       </button>
 
-      <!-- Optional: Add Authors, Media, Image, Thumbnail, etc. -->
       <div class="form-group">
         <label for="additionalAuthors">Add Author(s)</label>
         <input type="text" id="additionalAuthors" name="additionalAuthors" placeholder="Add any co-authors or guest authors" />
@@ -199,18 +156,27 @@
         <input type="file" id="thumbnailImage" name="thumbnailImage" accept="image/*" />
       </div>
 
-      <!-- Tags, categories, etc. -->
       <div class="form-group">
         <label for="blogTags">Tags</label>
         <input type="text" id="blogTags" name="blogTags" placeholder="Enter comma-separated tags (e.g., AI, tech, coding)" />
       </div>
 
       <div class="form-group">
-        <label for="blogCategories">Categories</label>
-        <input type="text" id="blogCategories" name="blogCategories" placeholder="Enter comma-separated categories" />
+        <label for="blogCategories">Category</label>
+        <select id="blogCategories" name="blogCategories">
+          <option value="Technology">Technology</option>
+          <option value="Lifestyle">Lifestyle</option>
+          <option value="Travel">Travel</option>
+          <option value="Food">Food & Cooking</option>
+          <option value="Health">Health & Wellness</option>
+          <option value="Education">Education</option>
+          <option value="Business">Business</option>
+          <option value="Entertainment">Entertainment</option>
+          <option value="Art">Art & Design</option>
+          <option value="Personal">Personal</option>
+        </select>
       </div>
 
-      <!-- Submit button -->
       <div class="form-group">
         <button type="submit" class="btn-submit">Publish</button>
       </div>
