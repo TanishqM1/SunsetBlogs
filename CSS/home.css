@@ -1,0 +1,150 @@
+/* Main Content Styles */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 80px 20px;
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+.hero-content p {
+    font-size: 1.2em;
+    line-height: 1.6;
+}
+
+/* Features Section */
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    color: var(--dark-color);
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+.feature-card p {
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Recent Blogs Section */
+.recent-blogs {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.recent-blogs h2 {
+    text-align: center;
+    color: var(--dark-color);
+    margin-bottom: 40px;
+    font-size: 2em;
+}
+
+.blog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.blog-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+}
+
+.blog-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.blog-content h3 {
+    color: var(--dark-color);
+    margin-bottom: 10px;
+    font-size: 1.3em;
+}
+
+.blog-content p {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.blog-meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 2em;
+    }
+
+    .hero-content p {
+        font-size: 1.1em;
+    }
+
+    .features-section {
+        grid-template-columns: 1fr;
+        padding: 20px;
+    }
+
+    .blog-grid {
+        grid-template-columns: 1fr;
+    }
+} 

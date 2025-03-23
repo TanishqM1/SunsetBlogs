@@ -1,0 +1,144 @@
+/* Auth Container Styles */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.auth-card h2 {
+    color: #2c3e50;
+    margin-bottom: 8px;
+    font-size: 24px;
+}
+
+.auth-card p {
+    color: #7f8c8d;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+/* Form Styles */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group label.required::after {
+    content: "*";
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+.password-requirements {
+    font-size: 12px;
+    color: #7f8c8d;
+    margin-top: 4px;
+}
+
+/* Button Styles */
+.btn-primary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+}
+
+/* Links Styles */
+.auth-links {
+    margin-top: 24px;
+    color: #7f8c8d;
+}
+
+.auth-links a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+    color: #2980b9;
+}
+
+.auth-links p {
+    margin: 8px 0;
+}
+
+/* Error Message Styles */
+.error-message {
+    background: #fde8e8;
+    color: #e74c3c;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: left;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 30px 20px;
+    }
+
+    .auth-card h2 {
+        font-size: 20px;
+    }
+
+    .auth-card p {
+        font-size: 14px;
+    }
+
+    .form-group input {
+        padding: 10px;
+    }
+} 

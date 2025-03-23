@@ -13,6 +13,7 @@ CREATE TABLE posts (
     content TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    category VARCHAR(50) NOT NULL;
 );
 
 
@@ -37,5 +38,13 @@ CREATE TABLE comments (
     FOREIGN KEY (post_id) REFERENCES posts(post_id) ON DELETE CASCADE
 );
 
+CREATE TABLE followers (
+    followid INT AUTO_INCREMENT PRIMARY KEY,
+    followerid INT,
+    followeeid INT,
+    date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (followerid) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (followeeid) REFERENCES users(user_id) ON DELETE CASCADE
+);
 
 
