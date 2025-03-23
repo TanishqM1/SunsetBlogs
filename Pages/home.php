@@ -24,14 +24,62 @@ try {
     // Test the connection
     $conn->query("SELECT 1");
 
+    // Start session if not already started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // Get filter type from query parameters
+    $filter = isset($_GET['filter']) ? $_GET['filter'] : 'recent';
+    
+    // Get category from query parameters if it exists
+    $category = isset($_GET['category']) ? $_GET['category'] : null;
+    
+    // Log the received category and filter
+    error_log("Received category: " . $category . ", filter: " . $filter);
+    
     $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags 
-              FROM posts p 
-              ORDER BY p.created_at DESC 
-              LIMIT 10";
+              FROM posts p";
+    
+    // Add filters based on selection
+    $whereConditions = [];
+    $params = [];
+
+    if ($category) {
+        $whereConditions[] = "LOWER(p.category) = LOWER(:category)";
+        $params[':category'] = $category;
+    }
+
+    if ($filter === 'your-posts') {
+        if (!isset($_SESSION['user_id'])) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => true,
+                'message' => 'Please log in to view your posts'
+            ]);
+            exit;
+        }
+        $whereConditions[] = "p.user_id = :user_id";
+        $params[':user_id'] = $_SESSION['user_id'];
+    }
+    
+    if (!empty($whereConditions)) {
+        $query .= " WHERE " . implode(" AND ", $whereConditions);
+    }
+    
+    $query .= " ORDER BY p.created_at DESC LIMIT 10";
+    
+    // Log the final query
+    error_log("Executing query: " . $query);
     
     $stmt = $conn->prepare($query);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . print_r($conn->errorInfo(), true));
+    }
+
+    // Bind all parameters
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
     }
 
     $stmt->execute();
