@@ -34,18 +34,19 @@ document.addEventListener('DOMContentLoaded', function() {
         subtitleContainer.appendChild(newSubtitleGroup);
     };
 
-    // Form validation
+    // Form validation and submission
     const blogForm = document.querySelector('.blog-form');
     
-    blogForm.addEventListener('submit', function(e) {
+    blogForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         // Basic form validation
         const title = document.getElementById('blogTitle').value;
         const date = document.getElementById('blogDate').value;
         const author = document.getElementById('blogAuthor').value;
+        const category = document.getElementById('blogCategories').value;
         
-        if (!title || !date || !author) {
+        if (!title || !date || !author || !category) {
             alert('Please fill in all required fields');
             return;
         }
@@ -55,10 +56,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const contents = document.querySelectorAll('textarea[name="subtitles-content[]"]');
         
         let isValid = true;
+        let contentArray = [];
         
         subtitles.forEach((subtitle, index) => {
             if (!subtitle.value || !contents[index].value) {
                 isValid = false;
+            } else {
+                contentArray.push({
+                    subtitle: subtitle.value,
+                    content: contents[index].value
+                });
             }
         });
         
@@ -66,9 +73,61 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Please fill in all subtitle and content fields');
             return;
         }
+
+        // Create FormData object for file uploads
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('date', date);
+        formData.append('author', author);
+        formData.append('category', category);
+        formData.append('content', JSON.stringify(contentArray));
+        formData.append('additionalAuthors', document.getElementById('additionalAuthors').value || '');
+        formData.append('mediaLinks', document.getElementById('mediaLinks').value || '');
+        formData.append('tags', document.getElementById('blogTags').value || '');
         
-        // If all validation passes, you can submit the form
-        // For now, we'll just show a success message
-        alert('Blog post created successfully!');
+        // Add files if they exist
+        const blogImage = document.getElementById('blogImage').files[0];
+        const thumbnailImage = document.getElementById('thumbnailImage').files[0];
+        
+        if (blogImage) {
+            formData.append('blogImage', blogImage);
+        }
+        if (thumbnailImage) {
+            formData.append('thumbnailImage', thumbnailImage);
+        }
+
+        try {
+            console.log('Sending form data...');
+            const response = await fetch('create_post.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            console.log('Response status:', response.status);
+            const responseText = await response.text();
+            console.log('Raw response:', responseText);
+
+            let result;
+            try {
+                result = JSON.parse(responseText);
+            } catch (parseError) {
+                console.error('Failed to parse response as JSON:', parseError);
+                console.error('Raw response was:', responseText);
+                throw new Error('Server returned invalid JSON response');
+            }
+
+            console.log('Parsed response data:', result);
+            
+            if (result.success) {
+                alert('Blog post created successfully!');
+                window.location.href = 'your-work.html'; // Redirect to user's posts
+            } else {
+                console.error('Server error:', result.debug_message); // Log the debug message
+                alert(result.message || 'An error occurred while creating the post');
+            }
+        } catch (error) {
+            console.error('Error details:', error);
+            alert('An error occurred while creating the post. Please try again.');
+        }
     });
 }); 
