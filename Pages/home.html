@@ -132,6 +132,35 @@
                 }
                 
                 // Fetch posts with filter
+                fetchPosts(url);
+            });
+
+            // Add event listener for category dropdown
+            categorySelect.addEventListener('change', function() {
+                const selectedFilter = filterSelect.value;
+                const selectedCategory = categorySelect.value;
+                
+                // Build URL with both filter and category parameters
+                let url = 'home.php';
+                const params = new URLSearchParams();
+                
+                if (selectedFilter !== 'recent') {
+                    params.append('filter', selectedFilter);
+                }
+                if (selectedCategory) {
+                    params.append('category', selectedCategory);
+                }
+                
+                if (params.toString()) {
+                    url += '?' + params.toString();
+                }
+                
+                // Fetch posts with filter
+                fetchPosts(url);
+            });
+
+            // Function to fetch and display posts
+            function fetchPosts(url) {
                 fetch(url)
                     .then(response => {
                         if (!response.ok) {
@@ -161,38 +190,10 @@
                         document.getElementById('posts-container').innerHTML = 
                             `<p class="error-message">Error loading posts: ${error.message}</p>`;
                     });
-            });
+            }
 
             // Initial fetch of posts
-            fetch('home.php')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.error) {
-                        console.error('Server error:', data.message);
-                        document.getElementById('posts-container').innerHTML = 
-                            `<p class="error-message">Error loading posts: ${data.message}</p>`;
-                        return;
-                    }
-
-                    if (!Array.isArray(data) || data.length === 0) {
-                        document.getElementById('posts-container').innerHTML = 
-                            '<p class="no-posts">No posts available yet.</p>';
-                        return;
-                    }
-
-                    allPosts = data;
-                    displayPosts(allPosts);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('posts-container').innerHTML = 
-                        `<p class="error-message">Error loading posts: ${error.message}</p>`;
-                });
+            fetchPosts('home.php');
         });
     </script>
 </body>
