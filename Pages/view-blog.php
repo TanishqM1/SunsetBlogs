@@ -25,6 +25,17 @@ $like_stmt = $pdo->prepare("SELECT * FROM liked_posts WHERE user_id = ? AND post
 $like_stmt->execute([$_SESSION['user_id'], $post_id]);
 $has_liked = $like_stmt->rowCount() > 0;
 
+// Get comments for this post
+$comments_stmt = $pdo->prepare("
+    SELECT c.*, u.username 
+    FROM comments c 
+    JOIN users u ON c.user_id = u.user_id 
+    WHERE c.post_id = ? 
+    ORDER BY c.created_at DESC
+");
+$comments_stmt->execute([$post_id]);
+$comments = $comments_stmt->fetchAll(PDO::FETCH_ASSOC);
+
 // Parse the content JSON
 $content = json_decode($post['content'], true);
 ?>
@@ -41,6 +52,70 @@ $content = json_decode($post['content'], true);
         .liked {
             background-color: #ff4757 !important;
             color: white !important;
+        }
+        
+        .comments-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .comment-form {
+            margin-bottom: 2rem;
+        }
+        
+        .comment-input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .comment-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .comment {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 1rem;
+        }
+        
+        .comment:last-child {
+            border-bottom: none;
+        }
+        
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .comment-content {
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .submit-comment {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .submit-comment:hover {
+            background-color: var(--primary-dark-color);
         }
     </style>
 </head>
@@ -92,6 +167,27 @@ $content = json_decode($post['content'], true);
                     <span>↗</span> Share
                 </button>
             </div>
+
+            <div class="comments-section">
+                <h3>Comments</h3>
+                <div class="comment-form">
+                    <textarea class="comment-input" placeholder="Write a comment..."></textarea>
+                    <button class="submit-comment" data-post-id="<?php echo $post_id; ?>">Post Comment</button>
+                </div>
+                <ul class="comment-list">
+                    <?php foreach ($comments as $comment): ?>
+                        <li class="comment">
+                            <div class="comment-header">
+                                <span class="comment-author"><?php echo htmlspecialchars($comment['username']); ?></span>
+                                <span class="comment-date"><?php echo date('F j, Y g:i A', strtotime($comment['created_at'])); ?></span>
+                            </div>
+                            <div class="comment-content">
+                                <?php echo nl2br(htmlspecialchars($comment['content'])); ?>
+                            </div>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
         </div>
     </div>
 
@@ -103,11 +199,14 @@ $content = json_decode($post['content'], true);
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const likeBtn = document.querySelector('.like-btn');
+            const commentInput = document.querySelector('.comment-input');
+            const submitCommentBtn = document.querySelector('.submit-comment');
+            const commentList = document.querySelector('.comment-list');
             
+            // Like button functionality
             likeBtn.addEventListener('click', function() {
                 const postId = this.dataset.postId;
                 
-                // Send POST request to like_post.php
                 fetch('like_post.php', {
                     method: 'POST',
                     headers: {
@@ -118,7 +217,6 @@ $content = json_decode($post['content'], true);
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Toggle like button appearance
                         if (data.action === 'liked') {
                             likeBtn.classList.add('liked');
                             likeBtn.innerHTML = '<span>❤</span> Liked';
@@ -133,6 +231,54 @@ $content = json_decode($post['content'], true);
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred while processing your request');
+                });
+            });
+
+            // Comment submission functionality
+            submitCommentBtn.addEventListener('click', function() {
+                const postId = this.dataset.postId;
+                const content = commentInput.value.trim();
+                
+                if (!content) {
+                    alert('Please write a comment before submitting');
+                    return;
+                }
+                
+                fetch('add_comment.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'post_id=' + postId + '&content=' + encodeURIComponent(content)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Clear the input
+                        commentInput.value = '';
+                        
+                        // Add the new comment to the list
+                        const newComment = document.createElement('li');
+                        newComment.className = 'comment';
+                        newComment.innerHTML = `
+                            <div class="comment-header">
+                                <span class="comment-author">${data.comment.username}</span>
+                                <span class="comment-date">${new Date(data.comment.created_at).toLocaleString()}</span>
+                            </div>
+                            <div class="comment-content">
+                                ${data.comment.content}
+                            </div>
+                        `;
+                        
+                        // Add the new comment at the top of the list
+                        commentList.insertBefore(newComment, commentList.firstChild);
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while adding your comment');
                 });
             });
         });
