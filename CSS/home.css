@@ -129,6 +129,187 @@
     font-size: 0.9em;
 }
 
+/* Welcome Section */
+.welcome-section {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: -20px;
+}
+
+.welcome-section h1 {
+    font-size: 2.5em;
+    margin: 0 0 15px 0;
+}
+
+.welcome-section p {
+    font-size: 1.2em;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Posts Container */
+.posts-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.post-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+}
+
+.post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.post-image {
+    width: 200px;
+    height: 150px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    flex-shrink: 0;
+    position: relative;
+    background-color: #f5f5f5;
+}
+
+.post-content {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.post-content h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    color: #666;
+    font-size: 0.9em;
+    margin-top: auto;
+}
+
+.no-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #666;
+    font-size: 1.1em;
+    text-align: center;
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.error-message, .no-posts {
+    text-align: center;
+    color: #dc3545;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.no-posts {
+    color: var(--text-color);
+}
+
+/* Filter Bar */
+.filter-bar {
+    background: white;
+    padding: 15px 20px;
+    margin: 20px auto;
+    max-width: 1200px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 200px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.search-button {
+    padding: 8px 15px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-left: 10px;
+}
+
+.filter-menu select,
+.category-menu select {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1em;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    min-width: 150px;
+}
+
+.post-tags {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.category {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
+.tags {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: 500;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-content h1 {
@@ -146,5 +327,37 @@
 
     .blog-grid {
         grid-template-columns: 1fr;
+    }
+
+    .post-card {
+        flex-direction: column;
+    }
+
+    .post-image {
+        width: 100%;
+        height: 200px;
+    }
+
+    .welcome-section h1 {
+        font-size: 2em;
+    }
+
+    .welcome-section p {
+        font-size: 1.1em;
+    }
+
+    .filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-menu select,
+    .category-menu select {
+        width: 100%;
     }
 } 

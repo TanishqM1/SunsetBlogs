@@ -47,4 +47,12 @@ CREATE TABLE followers (
     FOREIGN KEY (followeeid) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
+CREATE TABLE inquiry (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    context TEXT,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+);
 
