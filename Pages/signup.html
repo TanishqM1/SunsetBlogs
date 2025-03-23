@@ -5,76 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - Sunset Blogs</title>
     <link rel="stylesheet" href="../CSS/theme.css">
-    <link rel="stylesheet" href="../CSS/signup.css">
+    <link rel="stylesheet" href="../CSS/auth.css">
 </head>
 <body>
-    <nav>
-        <a href="../index.html">Home</a>
-        <a href="your-work.html">Your Work</a>
-        <a href="profile.html">Profile</a>
-        <a href="contact.html">Contact</a>
-    </nav>
-
-    <div class="container">
-        <div class="signup-container">
-            <h1 class="page-title">Create Your Account</h1>
-            <form class="signup-form" novalidate>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="firstName" class="required">First Name</label>
-                        <input type="text" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName" class="required">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="email" class="required">Email Address</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-
+    <div class="auth-container">
+        <div class="auth-card">
+            <h2>Create Account</h2>
+            <p>Join our community of writers and readers</p>
+            
+            <form id="signup-form" class="auth-form">
                 <div class="form-group">
                     <label for="username" class="required">Username</label>
                     <input type="text" id="username" name="username" required>
                 </div>
-
+                
+                <div class="form-group">
+                    <label for="email" class="required">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                
                 <div class="form-group">
                     <label for="password" class="required">Password</label>
                     <input type="password" id="password" name="password" required>
                     <p class="password-requirements">
-                        Password must be at least 8 characters long and include uppercase, lowercase, numbers, and special characters.
+                        Password must be at least 8 characters long
                     </p>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="confirmPassword" class="required">Confirm Password</label>
                     <input type="password" id="confirmPassword" name="confirmPassword" required>
                 </div>
-
-                <div class="terms">
-                    By creating an account, you agree to our Terms of Service and Privacy Policy.
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="newsletter" name="newsletter">
-                    <label for="newsletter">Subscribe to our newsletter for updates and featured content</label>
-                </div>
-
-                <button type="submit" class="btn-signup">Create Account</button>
-
-                <p class="login-link">
-                    Already have an account? <a href="login.html">Log in</a>
-                </p>
+                
+                <button type="submit" class="btn-primary">Create Account</button>
             </form>
+            
+            <div class="auth-links">
+                <p>Already have an account? <a href="login.html">Login</a></p>
+                <p><a href="../index.html">Back</a></p>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
-        <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
-    </footer>
-    <script src="../JavaScript/signup-validation.js"></script>
+    <script src="../JavaScript/signup.js"></script>
 </body>
 </html>
