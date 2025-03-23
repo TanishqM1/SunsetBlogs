@@ -15,75 +15,136 @@
         <a href="contact.html">Contact</a>
     </nav>
 
-    <main>
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1>Welcome to Sunset Blogs</h1>
-                <p>Share your thoughts, explore creative blogs, and connect with others in a vibrant community of writers and readers. Join us in creating meaningful content that inspires and engages.</p>
-            </div>
-        </section>
+    <div class="welcome-section">
+        <h1>Welcome to Sunset Blogs</h1>
+        <p>Share your thoughts, explore creative blogs, and connect with others in a vibrant community of writers and readers. Join us in creating meaningful content that inspires and engages.</p>
+    </div>
 
-        <section class="features-section">
-            <div class="feature-card">
-                <div class="feature-icon">✍️</div>
-                <h3>Create & Share</h3>
-                <p>Write and publish your stories, ideas, and experiences with our easy-to-use editor. Share your unique perspective with the world.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🌟</div>
-                <h3>Discover</h3>
-                <p>Explore a diverse collection of blogs from talented writers around the globe. Find content that resonates with your interests.</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">💬</div>
-                <h3>Connect</h3>
-                <p>Engage with other writers and readers. Build meaningful connections and be part of a supportive community.</p>
-            </div>
-        </section>
+    <div class="filter-bar">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Search posts...">
+            <button type="button" class="search-button">🔍</button>
+        </div>
+        
+        <div class="filter-menu">
+            <select id="filter-select">
+                <option value="recent">Recent</option>
+                <option value="hot">Hot</option>
+                <option value="your-posts">Your Posts</option>
+                <option value="most-discussed">Most Discussed</option>
+            </select>
+        </div>
+        
+        <div class="category-menu">
+            <select id="category-select">
+                <option value="">All Categories</option>
+                <option value="technology">Technology</option>
+                <option value="lifestyle">Lifestyle</option>
+                <option value="travel">Travel</option>
+                <option value="food">Food</option>
+                <option value="health">Health</option>
+                <option value="business">Business</option>
+                <option value="education">Education</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="sports">Sports</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+    </div>
 
-        <section class="recent-blogs">
-            <h2>Featured Blogs</h2>
-            <div class="blog-grid">
-                <div class="blog-card">
-                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=500&auto=format');"></div>
-                    <div class="blog-content">
-                        <h3>The Art of Creative Writing</h3>
-                        <p>Discover techniques and tips to enhance your writing skills and create compelling content.</p>
-                        <div class="blog-meta">
-                            <span>By Sarah Johnson</span>
-                            <span>5 min read</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&auto=format');"></div>
-                    <div class="blog-content">
-                        <h3>Digital Storytelling</h3>
-                        <p>Learn how to leverage multimedia elements to create engaging digital narratives.</p>
-                        <div class="blog-meta">
-                            <span>By Michael Chen</span>
-                            <span>4 min read</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="blog-card">
-                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=500&auto=format');"></div>
-                    <div class="blog-content">
-                        <h3>Finding Your Voice</h3>
-                        <p>Develop your unique writing style and stand out in the digital landscape.</p>
-                        <div class="blog-meta">
-                            <span>By Emma Davis</span>
-                            <span>6 min read</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
+    <div class="posts-container" id="posts-container">
+        <!-- Posts will be loaded here -->
+    </div>
 
-    <footer>
-        <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
-        <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
-    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const filterSelect = document.getElementById('filter-select');
+            const categorySelect = document.getElementById('category-select');
+            let allPosts = [];
+
+            function filterPosts() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const filterValue = filterSelect.value;
+                const categoryValue = categorySelect.value;
+
+                const filteredPosts = allPosts.filter(post => {
+                    const matchesSearch = post.title.toLowerCase().includes(searchTerm);
+                    const matchesCategory = !categoryValue || post.category === categoryValue;
+                    return matchesSearch && matchesCategory;
+                });
+
+                displayPosts(filteredPosts);
+            }
+
+            function displayPosts(posts) {
+                const postsContainer = document.getElementById('posts-container');
+                postsContainer.innerHTML = '';
+
+                if (posts.length === 0) {
+                    postsContainer.innerHTML = '<div class="no-posts">No posts found</div>';
+                    return;
+                }
+
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post-card';
+                    postElement.innerHTML = `
+                        <div class="post-image" style="background-image: url('${post.thumbnail_image || '../Images/sun.png'}')">
+                            ${!post.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
+                        </div>
+                        <div class="post-content">
+                            <h2>${post.title}</h2>
+                            <div class="post-meta">
+                                <span>By ${post.author}</span>
+                                <span>${new Date(post.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div class="post-tags">
+                                <span class="category">${post.category}</span>
+                                ${post.tags ? `<span class="tags">${post.tags}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            }
+
+            // Add event listeners for filtering
+            searchInput.addEventListener('input', filterPosts);
+            filterSelect.addEventListener('change', filterPosts);
+            categorySelect.addEventListener('change', filterPosts);
+
+            // Fetch posts
+            fetch('home.php')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.error) {
+                        console.error('Server error:', data.message);
+                        document.getElementById('posts-container').innerHTML = 
+                            `<p class="error-message">Error loading posts: ${data.message}</p>`;
+                        return;
+                    }
+
+                    if (!Array.isArray(data) || data.length === 0) {
+                        document.getElementById('posts-container').innerHTML = 
+                            '<p class="no-posts">No posts available yet.</p>';
+                        return;
+                    }
+
+                    allPosts = data;
+                    displayPosts(allPosts);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('posts-container').innerHTML = 
+                        `<p class="error-message">Error loading posts: ${error.message}</p>`;
+                });
+        });
+    </script>
 </body>
 </html> 
