@@ -4,7 +4,7 @@ require_once '../config/session.php';
 requireLogin();
 
 // Get user's posts
-$stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC");
+$stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
 $stmt->execute([$_SESSION['user_id']]);
 $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
