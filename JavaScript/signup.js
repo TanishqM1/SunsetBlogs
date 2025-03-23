@@ -29,7 +29,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
         const data = await response.json();
         
         if (data.success) {
-            window.location.href = 'your-work.html';
+            window.location.href = 'your-work.php';
         } else {
             showError(data.message);
         }

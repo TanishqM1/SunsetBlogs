@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (result.success) {
                 alert('Blog post created successfully!');
-                window.location.href = 'your-work.html'; // Redirect to user's posts
+                window.location.href = 'your-work.php'; // Redirect to user's posts
             } else {
                 console.error('Server error:', result.debug_message); // Log the debug message
                 alert(result.message || 'An error occurred while creating the post');
