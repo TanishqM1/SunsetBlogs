@@ -5,58 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sunset Blogs</title>
     <link rel="stylesheet" href="CSS/theme.css">
-    <style>
-        main {
-            text-align: center;
-            padding: 50px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-size: 3em;
-            margin-bottom: 30px;
-            color: var(--primary-color);
-        }
-
-        p {
-            font-size: 1.3em;
-            color: var(--dark-color);
-            max-width: 800px;
-            margin: 0 auto 30px;
-            line-height: 1.6;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 40px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-size: 1.2em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 20px;
-        }
-
-        .cta-button:hover {
-            background-color: #ff5252;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero-section {
-            background-color: white;
-            padding: 60px 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
-        }
-    </style>
+    <link rel="stylesheet" href="CSS/index.css">
 </head>
 <body>
+    <div class="logo-container">
+        <div class="logo"></div>
+        <div class="logo-text">Sunset Blogs</div>
+    </div>
     <nav>
         <a href="index.html">Home</a>
         <a href="Pages/your-work.html">Your Work</a>
@@ -65,11 +20,70 @@
     </nav>
 
     <main>
-        <div class="hero-section">
-            <h2>Welcome to Sunset Blogs</h2>
-            <p>Share your thoughts, explore creative blogs, and connect with others in a vibrant community of writers and readers.</p>
-            <a href="Pages/signup.html" class="cta-button">Get Started</a>
-        </div>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Welcome to Sunset Blogs</h1>
+                <p>Share your thoughts, explore creative blogs, and connect with others in a vibrant community of writers and readers. Join us in creating meaningful content that inspires and engages.</p>
+                <a href="Pages/signup.html" class="cta-button">Get Started</a>
+            </div>
+        </section>
+
+        <section class="features-section">
+            <div class="feature-card">
+                <div class="feature-icon">✍️</div>
+                <h3>Create & Share</h3>
+                <p>Write and publish your stories, ideas, and experiences with our easy-to-use editor. Share your unique perspective with the world.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌟</div>
+                <h3>Discover</h3>
+                <p>Explore a diverse collection of blogs from talented writers around the globe. Find content that resonates with your interests.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Connect</h3>
+                <p>Engage with other writers and readers. Build meaningful connections and be part of a supportive community.</p>
+            </div>
+        </section>
+
+        <section class="recent-blogs">
+            <h2>Featured Blogs</h2>
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=500&auto=format');"></div>
+                    <div class="blog-content">
+                        <h3>The Art of Creative Writing</h3>
+                        <p>Discover techniques and tips to enhance your writing skills and create compelling content.</p>
+                        <div class="blog-meta">
+                            <span>By Sarah Johnson</span>
+                            <span>5 min read</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=500&auto=format');"></div>
+                    <div class="blog-content">
+                        <h3>Digital Storytelling</h3>
+                        <p>Learn how to leverage multimedia elements to create engaging digital narratives.</p>
+                        <div class="blog-meta">
+                            <span>By Michael Chen</span>
+                            <span>4 min read</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="blog-card">
+                    <div class="blog-image" style="background-image: url('https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?w=500&auto=format');"></div>
+                    <div class="blog-content">
+                        <h3>Finding Your Voice</h3>
+                        <p>Develop your unique writing style and stand out in the digital landscape.</p>
+                        <div class="blog-meta">
+                            <span>By Emma Davis</span>
+                            <span>6 min read</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <footer>
