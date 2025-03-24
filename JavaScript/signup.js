@@ -5,6 +5,7 @@ document.getElementById('signup-form').addEventListener('submit', async function
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
+    const profilePicture = document.getElementById('profilePicture').files[0];
     
     // Basic validation
     if (password !== confirmPassword) {
@@ -16,14 +17,35 @@ document.getElementById('signup-form').addEventListener('submit', async function
         showError('Password must be at least 8 characters long');
         return;
     }
+
+    if (!profilePicture) {
+        showError('Profile picture is required');
+        return;
+    }
+
+    // Validate file size (5MB max)
+    if (profilePicture.size > 5 * 1024 * 1024) {
+        showError('Profile picture must be less than 5MB');
+        return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(profilePicture.type)) {
+        showError('Profile picture must be JPG, PNG, or GIF');
+        return;
+    }
     
     try {
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('profilePicture', profilePicture);
+        
         const response = await fetch('../Pages/signup.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, email, password })
+            body: formData
         });
         
         const data = await response.json();
