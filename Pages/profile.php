@@ -7,6 +7,12 @@ requireLogin();
 $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
+
+// Check if username or profile image is missing
+if (empty($user['username']) || empty($user['profile_image'])) {
+    header("Location: signup.html");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
