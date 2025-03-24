@@ -95,12 +95,16 @@
                             ${!post.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
                         </div>
                         <div class="post-content">
-                            <a href="view-blog.php?id=${post.post_id}"> <!-- Link to view blog page -->
+                            <a href="view-blog.php?id=${post.post_id}">
                                 <h2>${post.title}</h2>
                             </a>
                             <div class="post-meta">
                                 <span>By ${post.author}</span>
                                 <span>${new Date(post.created_at).toLocaleDateString()}</span>
+                            </div>
+                            <div class="post-stats">
+                                <span class="likes">❤ ${post.like_count || 0} likes</span>
+                                <span class="comments">💬 ${post.comment_count || 0} comments</span>
                             </div>
                             <div class="post-tags">
                                 <span class="category">${post.category}</span>
