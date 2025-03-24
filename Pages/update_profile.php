@@ -96,9 +96,11 @@ try {
             }
             
             // Create upload directory if it doesn't exist
-            $upload_dir = '../uploads/profile_images/';
+            $upload_dir = dirname(dirname(__DIR__)) . '/file_uploads/';
             if (!file_exists($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
+                if (!mkdir($upload_dir, 0777, true)) {
+                    throw new Exception('Failed to create upload directory');
+                }
             }
             
             // Generate unique filename
@@ -112,7 +114,7 @@ try {
             }
             
             // Update database with new image path
-            $relative_path = 'uploads/profile_images/' . $filename;
+            $relative_path = '../file_uploads/' . $filename;
             $stmt = $pdo->prepare("UPDATE users SET profile_image = ? WHERE user_id = ?");
             $stmt->execute([$relative_path, $user_id]);
             

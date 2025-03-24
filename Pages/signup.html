@@ -31,6 +31,14 @@
                 </div>
                 
                 <div class="form-group">
+                    <label for="profilePicture" class="required">Profile Picture</label>
+                    <input type="file" id="profilePicture" name="profilePicture" accept="image/jpeg,image/png,image/gif" required>
+                    <p class="file-requirements">
+                        Accepted formats: JPG, PNG, GIF (Max size: 5MB)
+                    </p>
+                </div>
+                
+                <div class="form-group">
                     <label for="password" class="required">Password</label>
                     <input type="password" id="password" name="password" required>
                     <p class="password-requirements">
@@ -43,10 +51,8 @@
                     <input type="password" id="confirmPassword" name="confirmPassword" required>
                 </div>
                 
-                <button type="submit" class="btn-primary" style="margin-bottom: 15px;">Create Account</button>
+                <button type="submit" class="btn-primary">Create Account</button>
             </form>
-            
-            <button onclick="window.location.href='home.html'" class="btn-primary continue-guest" style="margin-top: 10px; padding: 8px; font-size: 0.9em;">Continue as Guest</button>
             
             <div class="auth-links">
                 <p>Already have an account? <a href="login.html">Login</a></p>
