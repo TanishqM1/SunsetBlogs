@@ -109,11 +109,12 @@ try {
         $file_name = uniqid() . '.' . $file_extension;
         $target_path = $upload_dir . $file_name;
         
+
         if (!move_uploaded_file($_FILES['thumbnailImage']['tmp_name'], $target_path)) {
             throw new Exception('Failed to upload thumbnail image');
         }
         
-        $thumbnail_image = 'uploads/' . $file_name;
+        $thumbnail_image = '../uploads/' . $file_name;
     }
 
     // Prepare SQL statement
