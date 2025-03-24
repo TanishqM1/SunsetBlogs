@@ -65,7 +65,7 @@ $content = json_decode($post['content'], true);
 
             <?php if ($post['blog_image']): ?>
                 <div class="blog-image">
-                    <img src="../<?php echo htmlspecialchars($post['blog_image']); ?>" alt="Blog header image">
+                    <img src="../../file_uploads/<?php echo basename(htmlspecialchars($post['blog_image'])); ?>" alt="Blog header image">
                 </div>
             <?php endif; ?>
 

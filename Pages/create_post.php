@@ -69,22 +69,30 @@ try {
             throw new Exception('Blog image is too large. Maximum size is 5MB.');
         }
         
-        $upload_dir = '../../file_uploads/';
+        $upload_dir = dirname(dirname(__DIR__)) . '/file_uploads/';
+        error_log("Upload directory path: " . $upload_dir);
+        
         if (!file_exists($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
                 throw new Exception('Failed to create upload directory');
             }
         }
         
+        if (!is_writable($upload_dir)) {
+            throw new Exception('Upload directory is not writable: ' . $upload_dir);
+        }
+        
         $file_extension = strtolower(pathinfo($_FILES['blogImage']['name'], PATHINFO_EXTENSION));
         $file_name = uniqid() . '.' . $file_extension;
         $target_path = $upload_dir . $file_name;
+        
+        error_log("Attempting to upload file to: " . $target_path);
         
         if (!move_uploaded_file($_FILES['blogImage']['tmp_name'], $target_path)) {
             throw new Exception('Failed to upload blog image');
         }
         
-        $blog_image = '../../file_uploads/' . $file_name;
+        $blog_image = '../file_uploads/' . $file_name;
     }
 
     if (isset($_FILES['thumbnailImage']) && $_FILES['thumbnailImage']['error'] === UPLOAD_ERR_OK) {
@@ -98,23 +106,30 @@ try {
             throw new Exception('Thumbnail is too large. Maximum size is 5MB.');
         }
         
-        $upload_dir = '../../file_uploads/';
+        $upload_dir = dirname(dirname(__DIR__)) . '/file_uploads/';
+        error_log("Upload directory path for thumbnail: " . $upload_dir);
+        
         if (!file_exists($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
                 throw new Exception('Failed to create upload directory');
             }
         }
         
+        if (!is_writable($upload_dir)) {
+            throw new Exception('Upload directory is not writable: ' . $upload_dir);
+        }
+        
         $file_extension = strtolower(pathinfo($_FILES['thumbnailImage']['name'], PATHINFO_EXTENSION));
         $file_name = uniqid() . '.' . $file_extension;
         $target_path = $upload_dir . $file_name;
         
-
+        error_log("Attempting to upload thumbnail to: " . $target_path);
+        
         if (!move_uploaded_file($_FILES['thumbnailImage']['tmp_name'], $target_path)) {
             throw new Exception('Failed to upload thumbnail image');
         }
         
-        $thumbnail_image = '../../file_uploads/' . $file_name;
+        $thumbnail_image = '../file_uploads/' . $file_name;
     }
 
     // Prepare SQL statement
