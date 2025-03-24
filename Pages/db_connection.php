@@ -1,9 +1,9 @@
 <?php
 // Database configuration
 $host = 'localhost';
-$dbname = 'sunset_blogs';
-$username = 'root';
-$password = '';
+$dbname = 'kmercha1';
+$username = 'kemrcha1';
+$password = 'kmercha1';
 try {
     // Create PDO connection
     $conn = new PDO(
