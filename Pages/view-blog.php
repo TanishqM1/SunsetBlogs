@@ -163,9 +163,6 @@ $content = json_decode($post['content'], true);
                 <button class="action-btn like-btn <?php echo $has_liked ? 'liked' : ''; ?>" data-post-id="<?php echo $post_id; ?>">
                     <span>❤</span> <?php echo $has_liked ? 'Liked' : 'Like'; ?>
                 </button>
-                <button class="action-btn share-btn">
-                    <span>↗</span> Share
-                </button>
             </div>
 
             <div class="comments-section">
