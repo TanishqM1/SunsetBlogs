@@ -91,7 +91,7 @@
                     const postElement = document.createElement('div');
                     postElement.className = 'post-card';
                     postElement.innerHTML = `
-                        <div class="post-image" style="background-image: url('${post.thumbnail_image || '../Images/sun.png'}')">
+                        <div class="post-image" style="background-image: url('${post.thumbnail_image ? '../../file_uploads/' + post.thumbnail_image.split('/').pop() : '../Images/sun.png'}')">
                             ${!post.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
                         </div>
                         <div class="post-content">
