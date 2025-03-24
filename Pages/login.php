@@ -8,10 +8,10 @@ header('Content-Type: application/json');
 
 try {
     // Database connection details
-    $servername = "localhost";
-    $username = "kmercha1";
-    $password = "kmercha1";
-    $dbname = "kmercha1";
+    $host = 'localhost';
+    $dbname = 'sunset_blogs';
+    $username = 'root';
+    $password = '';
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);

@@ -123,7 +123,7 @@ $content = json_decode($post['content'], true);
     <nav class="navbar">
         <a href="home.html" class="nav-title">Home</a>
         <a href="your-work.php">Your Work</a>
-        <a href="profile.html">Profile</a>
+        <a href="profile.php">Profile</a>
         <a href="contact.html">Contact</a>
     </nav>
 
