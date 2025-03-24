@@ -9,9 +9,9 @@ header('Content-Type: application/json');
 try {
     // Database connection details
     $host = 'localhost';
-$dbname = 'sunset_blogs';
-$username = 'root';
-$password = '';
+$dbname = 'kmercha1';
+$username = 'kmercha1';
+$password = 'kmercha1';
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
     if ($conn->connect_error) {
