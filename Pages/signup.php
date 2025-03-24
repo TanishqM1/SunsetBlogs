@@ -9,9 +9,10 @@ header('Content-Type: application/json');
 try {
     // Database connection details
     $host = 'localhost';
-$dbname = 'kmercha1';
-$username = 'kmercha1';
-$password = 'kmercha1';
+    $dbname = 'kmercha1';
+    $username = 'kmercha1';
+    $password = 'kmercha1';
+
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
     if ($conn->connect_error) {
@@ -19,24 +20,54 @@ $password = 'kmercha1';
     }
 
     // Get POST data
-    $input = file_get_contents('php://input');
-    if (!$input) {
-        throw new Exception('No input received');
-    }
-
-    $data = json_decode($input, true);
-    if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON data received');
-    }
-
-    $username = $data['username'] ?? '';
-    $email = $data['email'] ?? '';
-    $password = $data['password'] ?? '';
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
 
     // Validate input
     if (empty($username) || empty($email) || empty($password)) {
         throw new Exception('Please fill in all fields');
     }
+
+    // Handle profile picture upload
+    if (!isset($_FILES['profilePicture']) || $_FILES['profilePicture']['error'] !== UPLOAD_ERR_OK) {
+        throw new Exception('Profile picture is required');
+    }
+
+    $file = $_FILES['profilePicture'];
+    
+    // Validate file type
+    $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($file['type'], $allowed_types)) {
+        throw new Exception('Invalid file type. Only JPG, PNG and GIF are allowed.');
+    }
+    
+    // Validate file size (5MB)
+    $max_size = 5 * 1024 * 1024;
+    if ($file['size'] > $max_size) {
+        throw new Exception('File is too large. Maximum size is 5MB.');
+    }
+    
+    // Create upload directory if it doesn't exist
+    $upload_dir = dirname(dirname(__DIR__)) . '/file_uploads/';
+    if (!file_exists($upload_dir)) {
+        if (!mkdir($upload_dir, 0777, true)) {
+            throw new Exception('Failed to create upload directory');
+        }
+    }
+    
+    // Generate unique filename
+    $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+    $filename = uniqid() . '.' . $extension;
+    $filepath = $upload_dir . $filename;
+    
+    // Move uploaded file
+    if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+        throw new Exception('Failed to upload profile picture');
+    }
+    
+    // Store relative path in database
+    $relative_path = '../file_uploads/' . $filename;
 
     // Check if username exists
     $sql = "SELECT user_id FROM users WHERE username = ?";
@@ -62,13 +93,13 @@ $password = 'kmercha1';
         throw new Exception('Email already exists');
     }
 
-    // Insert new user with plain password
-    $sql = "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)";
+    // Insert new user with profile picture
+    $sql = "INSERT INTO users (username, email, password_hash, profile_image) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
     if (!$stmt) {
         throw new Exception('Prepare failed: ' . $conn->error);
     }
-    $stmt->bind_param("sss", $username, $email, $password);
+    $stmt->bind_param("ssss", $username, $email, $password, $relative_path);
 
     if (!$stmt->execute()) {
         throw new Exception('Execute failed: ' . $stmt->error);
