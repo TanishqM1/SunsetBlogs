@@ -193,6 +193,92 @@ if ($isAdmin) {
         .delete-btn:hover {
             background: #c82333;
         }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 8px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            margin-right: 0.5rem;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .modal h2 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
@@ -239,6 +325,137 @@ if ($isAdmin) {
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="profile-section">
+                <h2>Post Management</h2>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Post ID</th>
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        // Get all posts with author information
+                        $stmt = $pdo->query("
+                            SELECT p.*, u.username as author_name 
+                            FROM posts p 
+                            LEFT JOIN users u ON p.user_id = u.user_id 
+                            ORDER BY p.created_at DESC
+                        ");
+                        $posts = $stmt->fetchAll();
+                        
+                        foreach ($posts as $post):
+                        ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($post['post_id']); ?></td>
+                                <td><?php echo htmlspecialchars($post['author_name']); ?></td>
+                                <td><?php echo htmlspecialchars($post['title']); ?></td>
+                                <td><?php echo htmlspecialchars($post['category']); ?></td>
+                                <td><?php echo htmlspecialchars($post['created_at']); ?></td>
+                                <td>
+                                    <button class="btn btn-edit" onclick="editPost(<?php echo $post['post_id']; ?>)">
+                                        Edit
+                                    </button>
+                                    <button class="delete-btn" onclick="deletePost(<?php echo $post['post_id']; ?>)">
+                                        Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Post Edit Modal -->
+            <div id="editPostModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Edit Post</h2>
+                    <form id="editPostForm">
+                        <input type="hidden" id="edit_post_id">
+                        
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_title">Title</label>
+                                    <input type="text" id="edit_title" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_category">Category</label>
+                                    <input type="text" id="edit_category" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_date">Date</label>
+                                    <input type="date" id="edit_date" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_author">Author</label>
+                                    <input type="text" id="edit_author" class="form-control" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_additional_authors">Additional Authors</label>
+                                    <input type="text" id="edit_additional_authors" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_tags">Tags</label>
+                                    <input type="text" id="edit_tags" class="form-control" placeholder="Separate tags with commas">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit_media_links">Media Links</label>
+                            <input type="text" id="edit_media_links" class="form-control" placeholder="Add media links">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_blog_image">Blog Image</label>
+                                    <input type="file" id="edit_blog_image" class="form-control" accept="image/*">
+                                    <div id="current_blog_image"></div>
+                                </div>
+                            </div>
+                            <div class="form-col">
+                                <div class="form-group">
+                                    <label for="edit_thumbnail_image">Thumbnail Image</label>
+                                    <input type="file" id="edit_thumbnail_image" class="form-control" accept="image/*">
+                                    <div id="current_thumbnail_image"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="edit_content">Content</label>
+                            <textarea id="edit_content" class="form-control" rows="10" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn">Save Changes</button>
+                    </form>
+                </div>
             </div>
         <?php else: ?>
             <div class="profile-header">
@@ -291,6 +508,10 @@ if ($isAdmin) {
     </div>
 
     <script>
+        // Declare modal variables at the top scope
+        let modal;
+        let closeBtn;
+
         function showAlert(message, type) {
             const alert = document.getElementById(type + '-alert');
             alert.textContent = message;
@@ -300,8 +521,50 @@ if ($isAdmin) {
             }, 5000);
         }
 
-        // Handle profile image upload
-        document.getElementById('profile-image-input').addEventListener('change', function(e) {
+        // Initialize all event listeners and UI elements when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize modal elements
+            modal = document.getElementById('editPostModal');
+            closeBtn = document.getElementsByClassName('close')[0];
+            
+            if (modal && closeBtn) {
+                closeBtn.onclick = function() {
+                    modal.style.display = 'none';
+                }
+
+                window.onclick = function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                }
+            }
+
+            // Initialize profile image upload
+            const profileImageInput = document.getElementById('profile-image-input');
+            if (profileImageInput) {
+                profileImageInput.addEventListener('change', handleProfileImageUpload);
+            }
+
+            // Initialize info form
+            const infoForm = document.getElementById('info-form');
+            if (infoForm) {
+                infoForm.addEventListener('submit', handleInfoFormSubmit);
+            }
+
+            // Initialize password form
+            const passwordForm = document.getElementById('password-form');
+            if (passwordForm) {
+                passwordForm.addEventListener('submit', handlePasswordFormSubmit);
+            }
+
+            // Initialize edit post form
+            const editPostForm = document.getElementById('editPostForm');
+            if (editPostForm) {
+                editPostForm.addEventListener('submit', handleEditPostFormSubmit);
+            }
+        });
+
+        function handleProfileImageUpload(e) {
             const file = e.target.files[0];
             if (!file) return;
 
@@ -325,10 +588,9 @@ if ($isAdmin) {
             .catch(error => {
                 showAlert('An error occurred while updating profile image', 'error');
             });
-        });
+        }
 
-        // Handle account information update
-        document.getElementById('info-form').addEventListener('submit', function(e) {
+        function handleInfoFormSubmit(e) {
             e.preventDefault();
 
             const formData = new FormData();
@@ -351,10 +613,9 @@ if ($isAdmin) {
             .catch(error => {
                 showAlert('An error occurred while updating profile', 'error');
             });
-        });
+        }
 
-        // Handle password update
-        document.getElementById('password-form').addEventListener('submit', function(e) {
+        function handlePasswordFormSubmit(e) {
             e.preventDefault();
 
             const formData = new FormData();
@@ -378,7 +639,7 @@ if ($isAdmin) {
             .catch(error => {
                 showAlert('An error occurred while updating password', 'error');
             });
-        });
+        }
 
         <?php if ($isAdmin): ?>
         function deleteUser(userId) {
@@ -397,7 +658,6 @@ if ($isAdmin) {
             .then(data => {
                 if (data.success) {
                     showAlert(data.message, 'success');
-                    // Reload the page to refresh the users list
                     setTimeout(() => window.location.reload(), 1000);
                 } else {
                     showAlert(data.message, 'error');
@@ -405,6 +665,132 @@ if ($isAdmin) {
             })
             .catch(error => {
                 showAlert('An error occurred while deleting the user', 'error');
+            });
+        }
+
+        function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post? This action cannot be undone.')) {
+                return;
+            }
+
+            fetch('delete_post.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ post_id: postId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('An error occurred while deleting the post', 'error');
+            });
+        }
+
+        function editPost(postId) {
+            if (!modal) {
+                showAlert('Modal initialization error', 'error');
+                return;
+            }
+
+            fetch('get_post.php?post_id=' + encodeURIComponent(postId))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('edit_post_id').value = data.post.post_id;
+                    document.getElementById('edit_title').value = data.post.title;
+                    document.getElementById('edit_category').value = data.post.category || '';
+                    document.getElementById('edit_date').value = data.post.date || '';
+                    document.getElementById('edit_author').value = data.post.author || '';
+                    document.getElementById('edit_additional_authors').value = data.post.additional_authors || '';
+                    document.getElementById('edit_media_links').value = data.post.media_links || '';
+                    document.getElementById('edit_tags').value = data.post.tags || '';
+                    document.getElementById('edit_content').value = data.post.content || '';
+                    
+                    // Show current images if they exist
+                    const blogImageDiv = document.getElementById('current_blog_image');
+                    const thumbnailImageDiv = document.getElementById('current_thumbnail_image');
+                    
+                    blogImageDiv.innerHTML = data.post.blog_image ? 
+                        `<img src="../${data.post.blog_image}" alt="Current blog image" style="max-width: 200px; margin-top: 10px;">` : 
+                        'No current blog image';
+                    
+                    thumbnailImageDiv.innerHTML = data.post.thumbnail_image ? 
+                        `<img src="../${data.post.thumbnail_image}" alt="Current thumbnail" style="max-width: 200px; margin-top: 10px;">` : 
+                        'No current thumbnail';
+
+                    modal.style.display = 'block';
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while fetching post details: ' + error.message, 'error');
+            });
+        }
+
+        function handleEditPostFormSubmit(e) {
+            e.preventDefault();
+
+            const formData = new FormData();
+            
+            // Add all form fields to FormData
+            const fields = [
+                'post_id', 'title', 'category', 'date', 'author',
+                'additional_authors', 'media_links', 'tags', 'content'
+            ];
+            
+            fields.forEach(field => {
+                const value = document.getElementById('edit_' + field).value;
+                formData.append(field, value || ''); // Send empty string if value is null
+            });
+
+            // Handle file uploads
+            const blogImageInput = document.getElementById('edit_blog_image');
+            const thumbnailInput = document.getElementById('edit_thumbnail_image');
+            
+            if (blogImageInput.files[0]) {
+                formData.append('blog_image', blogImageInput.files[0]);
+            }
+            if (thumbnailInput.files[0]) {
+                formData.append('thumbnail_image', thumbnailInput.files[0]);
+            }
+
+            // Log form data for debugging
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            fetch('update_post.php', {
+                method: 'POST',
+                body: formData // FormData will automatically set the correct Content-Type
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    modal.style.display = 'none';
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('An error occurred while updating the post: ' + error.message, 'error');
             });
         }
         <?php endif; ?>
