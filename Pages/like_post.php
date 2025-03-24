@@ -42,6 +42,19 @@ try {
         ]);
     }
 
+} catch (PDOException $e) {
+    // Check for foreign key constraint violation
+    if ($e->getCode() == 23000 || 22007) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Interacting with posts requires you to log in!'
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => $e->getMessage()
+        ]);
+    }
 } catch (Exception $e) {
     echo json_encode([
         'success' => false,
