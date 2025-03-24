@@ -1,3 +1,9 @@
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
 .image-placeholder {
     background-color: var(--light-color);
     padding: 100px;
@@ -35,6 +41,11 @@ button[type="submit"] {
     width: 100%;
     margin-top: 20px;
     font-size: 1.1em;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 button[type="submit"]:hover {
@@ -47,4 +58,63 @@ h1 {
     text-align: center;
     font-size: 2em;
     margin-bottom: 30px;
+}
+
+/* Navbar styles */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    padding: 1rem 2rem;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    justify-content: center;
+    width: auto;
+    padding: 0 2rem;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.navbar a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.nav-title {
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    margin-right: 2rem !important;
+}
+
+.login-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid white;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.login-btn:hover {
+    background-color: white;
+    color: var(--primary-color) !important;
+}
+
+.logout-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 2px solid white;
+    border-radius: 20px;
+    font-size: 0.9rem;
 } 
