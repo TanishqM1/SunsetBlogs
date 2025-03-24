@@ -144,8 +144,6 @@ $liked_posts = $liked_posts_stmt->fetchAll(PDO::FETCH_ASSOC);
             <a href="your-work.php">Your Work</a>
             <a href="profile.php">Profile</a>
             <a href="contact.html">Contact</a>
-        </div>
-        <div class="nav-right">
             <a href="logout.php" class="logout-btn">Logout</a>
         </div>
     </nav>

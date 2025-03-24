@@ -126,8 +126,6 @@ $content = json_decode($post['content'], true);
             <a href="your-work.php">Your Work</a>
             <a href="profile.php">Profile</a>
             <a href="contact.html">Contact</a>
-        </div>
-        <div class="nav-right">
             <a href="logout.php" class="logout-btn">Logout</a>
         </div>
     </nav>
