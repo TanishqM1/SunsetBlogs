@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Sunset Blogs (Guest)</title>
+    <link rel="stylesheet" href="../CSS/theme.css">
+    <link rel="stylesheet" href="../CSS/contact.css">
+    <script src="../JavaScript/contact.js" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="home_guest.html" class="nav-title">Home</a>
+        <a href="contact_guest.html">Contact</a>
+    </nav>
+
+    <div class="container">
+        <div class="image-placeholder">
+            <p>Image Placeholder</p>
+        </div>
+
+        <div class="contact-container">
+            <h1>Contact Us</h1>
+            <form id="contact-form">
+                <div class="name-fields">
+                    <div class="input-group">
+                        <label for="first-name" class="required">First Name</label>
+                        <input type="text" id="first-name" name="first-name" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="last-name" class="required">Last Name</label>
+                        <input type="text" id="last-name" name="last-name" required>
+                    </div>
+                </div>
+                <div class="input-group question-group">
+                    <label for="question" class="required">Your Question</label>
+                    <textarea id="question" name="question" rows="4" required></textarea>
+                </div>
+                <button type="submit">Submit</button>
+            </form>
+            <p id="response-message"></p>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
+        <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
+    </footer>
+</body>
+</html> 
