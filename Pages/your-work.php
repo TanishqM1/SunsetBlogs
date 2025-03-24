@@ -3,6 +3,12 @@ require_once '../config/database.php';
 require_once '../config/session.php';
 requireLogin();
 
+// Check if the user is a guest
+if (isset($_SESSION['username']) && $_SESSION['username'] === 'Guest') {
+    header("Location: signup.html");
+    exit();
+}
+
 // Get user's posts
 $stmt = $pdo->prepare("SELECT * FROM posts WHERE user_id = ? ORDER BY created_at DESC LIMIT 5");
 $stmt->execute([$_SESSION['user_id']]);
