@@ -2,7 +2,7 @@
 // Database configuration
 $host = 'localhost';
 $dbname = 'kmercha1';
-$username = 'kemrcha1';
+$username = 'kmercha1';
 $password = 'kmercha1';
 try {
     // Create PDO connection
