@@ -7,6 +7,16 @@ requireLogin();
 $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
+
+// Check if the logged-in user is admin
+$isAdmin = ($user['user_id'] == 6);
+
+// If admin, get all users
+$allUsers = [];
+if ($isAdmin) {
+    $stmt = $pdo->query("SELECT * FROM users ORDER BY user_id");
+    $allUsers = $stmt->fetchAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -147,6 +157,42 @@ $user = $stmt->fetch();
             font-size: 0.9rem;
             margin-top: 0.5rem;
         }
+
+        /* Admin specific styles */
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .users-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .users-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -161,52 +207,87 @@ $user = $stmt->fetch();
         <div class="alert alert-success" id="success-alert"></div>
         <div class="alert alert-error" id="error-alert"></div>
 
-        <div class="profile-header">
-            <div class="profile-image-container">
-                <img src="<?php echo $user['profile_image'] ? '../' . htmlspecialchars($user['profile_image']) : '../Images/default-profile.png'; ?>" 
-                     alt="Profile" class="profile-image" id="profile-image">
-                <label class="profile-image-upload">
-                    <input type="file" accept="image/*" id="profile-image-input">
-                    📷
-                </label>
+        <?php if ($isAdmin): ?>
+            <h1>Admin Dashboard</h1>
+            <div class="profile-section">
+                <h2>User Management</h2>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($allUsers as $userData): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($userData['user_id']); ?></td>
+                                <td><?php echo htmlspecialchars($userData['username']); ?></td>
+                                <td><?php echo htmlspecialchars($userData['email']); ?></td>
+                                <td><?php echo htmlspecialchars($userData['created_at']); ?></td>
+                                <td>
+                                    <?php if ($userData['user_id'] != 6): // Prevent deleting admin account ?>
+                                        <button class="delete-btn" onclick="deleteUser(<?php echo $userData['user_id']; ?>)">
+                                            Delete
+                                        </button>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-            <div class="profile-info">
-                <h1><?php echo htmlspecialchars($user['username']); ?></h1>
-                <p class="member-since">Member since <?php echo date('F j, Y', strtotime($user['created_at'])); ?></p>
+        <?php else: ?>
+            <div class="profile-header">
+                <div class="profile-image-container">
+                    <img src="<?php echo $user['profile_image'] ? '../' . htmlspecialchars($user['profile_image']) : '../Images/default-profile.png'; ?>" 
+                         alt="Profile" class="profile-image" id="profile-image">
+                    <label class="profile-image-upload">
+                        <input type="file" accept="image/*" id="profile-image-input">
+                        📷
+                    </label>
+                </div>
+                <div class="profile-info">
+                    <h1><?php echo htmlspecialchars($user['username']); ?></h1>
+                    <p class="member-since">Member since <?php echo date('F j, Y', strtotime($user['created_at'])); ?></p>
+                </div>
             </div>
-        </div>
 
-        <div class="profile-section">
-            <h2>Account Information</h2>
-            <form id="info-form">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" class="form-control" 
-                           value="<?php echo htmlspecialchars($user['username']); ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" 
-                           value="<?php echo htmlspecialchars($user['email']); ?>" required>
-                </div>
-                <button type="submit" class="btn">Save Changes</button>
-            </form>
-        </div>
+            <div class="profile-section">
+                <h2>Account Information</h2>
+                <form id="info-form">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" name="username" class="form-control" 
+                               value="<?php echo htmlspecialchars($user['username']); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" class="form-control" 
+                               value="<?php echo htmlspecialchars($user['email']); ?>" required>
+                    </div>
+                    <button type="submit" class="btn">Save Changes</button>
+                </form>
+            </div>
 
-        <div class="profile-section">
-            <h2>Change Password</h2>
-            <form id="password-form">
-                <div class="form-group">
-                    <label for="current-password">Current Password</label>
-                    <input type="password" id="current-password" name="current_password" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="new-password">New Password</label>
-                    <input type="password" id="new-password" name="new_password" class="form-control" required>
-                </div>
-                <button type="submit" class="btn">Update Password</button>
-            </form>
-        </div>
+            <div class="profile-section">
+                <h2>Change Password</h2>
+                <form id="password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <input type="password" id="current-password" name="current_password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new-password" name="new_password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn">Update Password</button>
+                </form>
+            </div>
+        <?php endif; ?>
     </div>
 
     <script>
@@ -298,6 +379,35 @@ $user = $stmt->fetch();
                 showAlert('An error occurred while updating password', 'error');
             });
         });
+
+        <?php if ($isAdmin): ?>
+        function deleteUser(userId) {
+            if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                return;
+            }
+
+            fetch('delete_user.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id: userId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert(data.message, 'success');
+                    // Reload the page to refresh the users list
+                    setTimeout(() => window.location.reload(), 1000);
+                } else {
+                    showAlert(data.message, 'error');
+                }
+            })
+            .catch(error => {
+                showAlert('An error occurred while deleting the user', 'error');
+            });
+        }
+        <?php endif; ?>
     </script>
 </body>
 </html> 
