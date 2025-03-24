@@ -69,7 +69,7 @@ try {
             throw new Exception('Blog image is too large. Maximum size is 5MB.');
         }
         
-        $upload_dir = '../uploads/';
+        $upload_dir = '../../file_uploads/';
         if (!file_exists($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
                 throw new Exception('Failed to create upload directory');
@@ -84,7 +84,7 @@ try {
             throw new Exception('Failed to upload blog image');
         }
         
-        $blog_image = 'uploads/' . $file_name;
+        $blog_image = '../../file_uploads/' . $file_name;
     }
 
     if (isset($_FILES['thumbnailImage']) && $_FILES['thumbnailImage']['error'] === UPLOAD_ERR_OK) {
@@ -98,7 +98,7 @@ try {
             throw new Exception('Thumbnail is too large. Maximum size is 5MB.');
         }
         
-        $upload_dir = '../uploads/';
+        $upload_dir = '../../file_uploads/';
         if (!file_exists($upload_dir)) {
             if (!mkdir($upload_dir, 0777, true)) {
                 throw new Exception('Failed to create upload directory');
@@ -114,7 +114,7 @@ try {
             throw new Exception('Failed to upload thumbnail image');
         }
         
-        $thumbnail_image = '../uploads/' . $file_name;
+        $thumbnail_image = '../../file_uploads/' . $file_name;
     }
 
     // Prepare SQL statement
