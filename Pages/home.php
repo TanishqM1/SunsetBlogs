@@ -38,10 +38,29 @@ try {
     // Log the received category and filter
     error_log("Received category: " . $category . ", filter: " . $filter);
     
-    $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags 
-              FROM posts p";
+    // Base query changes based on filter
+    switch ($filter) {
+        case 'hot':
+            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
+                     COUNT(lp.post_id) as like_count
+                     FROM posts p
+                     LEFT JOIN liked_posts lp ON p.post_id = lp.post_id";
+            break;
+            
+        case 'most-discussed':
+            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
+                     COUNT(c.comment_id) as comment_count
+                     FROM posts p
+                     LEFT JOIN comments c ON p.post_id = c.post_id";
+            break;
+            
+        default:
+            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags 
+                     FROM posts p";
+            break;
+    }
     
-    // Add filters based on selection
+    // Add WHERE conditions
     $whereConditions = [];
     $params = [];
 
@@ -50,15 +69,7 @@ try {
         $params[':category'] = $category;
     }
 
-    if ($filter === 'your-posts') {
-        if (!isset($_SESSION['user_id'])) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'error' => true,
-                'message' => 'Please log in to view your posts'
-            ]);
-            exit;
-        }
+    if ($filter === 'your-posts' && isset($_SESSION['user_id'])) {
         $whereConditions[] = "p.user_id = :user_id";
         $params[':user_id'] = $_SESSION['user_id'];
     }
@@ -67,7 +78,20 @@ try {
         $query .= " WHERE " . implode(" AND ", $whereConditions);
     }
     
-    $query .= " ORDER BY p.created_at DESC LIMIT 10";
+    // Add GROUP BY and ORDER BY based on filter
+    switch ($filter) {
+        case 'hot':
+            $query .= " GROUP BY p.post_id ORDER BY like_count DESC LIMIT 5";
+            break;
+            
+        case 'most-discussed':
+            $query .= " GROUP BY p.post_id ORDER BY comment_count DESC LIMIT 5";
+            break;
+            
+        default:
+            $query .= " ORDER BY p.created_at DESC LIMIT 10";
+            break;
+    }
     
     // Log the final query
     error_log("Executing query: " . $query);
@@ -84,6 +108,21 @@ try {
 
     $stmt->execute();
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Add like and comment counts to the response for all posts
+    foreach ($posts as &$post) {
+        // Get like count
+        $likeStmt = $conn->prepare("SELECT COUNT(*) as like_count FROM liked_posts WHERE post_id = ?");
+        $likeStmt->execute([$post['post_id']]);
+        $likeCount = $likeStmt->fetch(PDO::FETCH_ASSOC);
+        $post['like_count'] = $likeCount['like_count'];
+
+        // Get comment count
+        $commentStmt = $conn->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
+        $commentStmt->execute([$post['post_id']]);
+        $commentCount = $commentStmt->fetch(PDO::FETCH_ASSOC);
+        $post['comment_count'] = $commentCount['comment_count'];
+    }
 
     // Log the number of posts found
     error_log("Found " . count($posts) . " posts");

@@ -310,6 +310,29 @@
     font-weight: 500;
 }
 
+/* Post Stats */
+.post-stats {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.post-stats span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.post-stats .likes {
+    color: #ff4757;
+}
+
+.post-stats .comments {
+    color: #2f3542;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .hero-content h1 {
