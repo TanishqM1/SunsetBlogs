@@ -60,12 +60,15 @@ h1 {
     margin-bottom: 30px;
 }
 
-/* Navbar specific styles */
+/* Navbar styles */
 .navbar {
     background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     padding: 1rem 2rem;
     margin-bottom: 30px;
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 .nav-left {
@@ -73,6 +76,8 @@ h1 {
     align-items: center;
     gap: 2rem;
     justify-content: center;
+    max-width: 1200px;
+    width: 100%;
 }
 
 .navbar a {
@@ -90,9 +95,9 @@ h1 {
 }
 
 .nav-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-right: 2rem;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+    margin-right: 2rem !important;
 }
 
 .logout-btn {
