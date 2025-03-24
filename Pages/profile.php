@@ -17,10 +17,10 @@ if ($isAdmin) {
     $stmt = $pdo->query("SELECT * FROM users ORDER BY user_id");
     $allUsers = $stmt->fetchAll();
 // Check if username or profile image is missing
-if (empty($user['username']) || empty($user['profile_image'])) {
-    header("Location: signup.html");
-    exit();
-}
+// if (empty($user['username']) || empty($user['profile_image'])) {
+//     header("Location: signup.html");
+//     exit();
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
