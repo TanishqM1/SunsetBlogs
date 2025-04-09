@@ -74,6 +74,14 @@ try {
         'password_hash' => $hashedPassword,
         'profile_image' => $filename
     ]);
+    
+     // Get inserted user ID
+     $userId = $pdo->lastInsertId();
+
+     // Start session and set session variables
+     session_start();
+     $_SESSION['user_id'] = $userId;
+     $_SESSION['username'] = $username;
 
 
     respond(true);
