@@ -18,6 +18,10 @@ try {
             if (empty($username) || empty($email)) {
                 throw new Exception('Username and email are required');
             }
+            if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+                throw new Exception('Username can only contain letters, numbers, and underscores — no spaces or special characters.');
+            }
+            
             
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 throw new Exception('Invalid email format');
