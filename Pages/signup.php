@@ -22,6 +22,11 @@ if (!$username || !$email || !$password || !$profilePicture) {
     respond(false, 'All fields are required.');
 }
 
+if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+    respond(false, 'Username can only contain letters, numbers, and underscores — no spaces or special characters.');
+}
+
+
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
     respond(false, 'Invalid email format.');
 }
