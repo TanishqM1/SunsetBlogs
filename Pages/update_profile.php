@@ -50,32 +50,38 @@ try {
             ]);
             break;
             
-        case 'password':
-            $current_password = $_POST['current_password'] ?? '';
-            $new_password = $_POST['new_password'] ?? '';
+            case 'password':
+                $current_password = $_POST['current_password'] ?? '';
+                $new_password = $_POST['new_password'] ?? '';
             
-            if (empty($current_password) || empty($new_password)) {
-                throw new Exception('Both current and new passwords are required');
-            }
+                if (empty($current_password) || empty($new_password)) {
+                    throw new Exception('Both current and new passwords are required');
+                }
             
-            // Verify current password
-            $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE user_id = ?");
-            $stmt->execute([$user_id]);
-            $user = $stmt->fetch();
+                if (strlen($new_password) < 8) {
+                    throw new Exception('New password must be at least 8 characters long');
+                }
             
-            if (!$user || $user['password_hash'] !== $current_password) {
-                throw new Exception('Current password is incorrect');
-            }
+                // Get current password hash
+                $stmt = $pdo->prepare("SELECT password_hash FROM users WHERE user_id = ?");
+                $stmt->execute([$user_id]);
+                $user = $stmt->fetch();
             
-            // Update password
-            $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
-            $stmt->execute([$new_password, $user_id]);
+                if (!$user || !password_verify($current_password, $user['password_hash'])) {
+                    throw new Exception('Current password is incorrect');
+                }
             
-            echo json_encode([
-                'success' => true,
-                'message' => 'Password updated successfully'
-            ]);
-            break;
+                // Hash and update new password
+                $new_hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("UPDATE users SET password_hash = ? WHERE user_id = ?");
+                $stmt->execute([$new_hashed_password, $user_id]);
+            
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Password updated successfully'
+                ]);
+                break;
+            
             
         case 'profile_image':
             if (!isset($_FILES['profile_image'])) {
