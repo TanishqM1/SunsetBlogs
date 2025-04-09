@@ -1,87 +1,61 @@
 <?php
-header('Content-Type: application/json');
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
-error_reporting(E_ALL);
+require_once '../config/database.php';
 
-require_once '../config/database.php'; // Adjust path as needed
+$filter = $_GET['filter'] ?? 'recent';
+$category = $_GET['category'] ?? '';
 
 try {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    $sql = "SELECT posts.*, 
+               users.username AS author,
+               (SELECT COUNT(*) FROM liked_posts WHERE liked_posts.post_id = posts.post_id) AS like_count,
+               (SELECT COUNT(*) FROM comments WHERE comments.post_id = posts.post_id) AS comment_count
+        FROM posts
+        JOIN users ON posts.user_id = users.user_id";
 
-    $filter = $_GET['filter'] ?? 'recent';
-    $category = $_GET['category'] ?? null;
-
-    switch ($filter) {
-        case 'hot':
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
-                             COUNT(lp.post_id) as like_count
-                      FROM posts p
-                      LEFT JOIN liked_posts lp ON p.post_id = lp.post_id";
-            break;
-
-        case 'most-discussed':
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
-                             COUNT(c.comment_id) as comment_count
-                      FROM posts p
-                      LEFT JOIN comments c ON p.post_id = c.post_id";
-            break;
-
-        default:
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags 
-                      FROM posts p";
-            break;
-    }
 
     $conditions = [];
     $params = [];
 
-    if ($category) {
-        $conditions[] = "LOWER(p.category) = LOWER(:category)";
+    if (!empty($category)) {
+        $conditions[] = "posts.category = :category";
         $params[':category'] = $category;
     }
 
-    if ($filter === 'your-posts' && isset($_SESSION['user_id'])) {
-        $conditions[] = "p.user_id = :user_id";
-        $params[':user_id'] = $_SESSION['user_id'];
-    }
-
     if (!empty($conditions)) {
-        $query .= " WHERE " . implode(" AND ", $conditions);
+        $sql .= " WHERE " . implode(" AND ", $conditions);
     }
 
+    // Sorting based on filter
     switch ($filter) {
         case 'hot':
-            $query .= " GROUP BY p.post_id ORDER BY like_count DESC LIMIT 5";
+            $sql .= " ORDER BY like_count DESC, posts.created_at DESC";
             break;
         case 'most-discussed':
-            $query .= " GROUP BY p.post_id ORDER BY comment_count DESC LIMIT 5";
+            $sql .= " ORDER BY comment_count DESC, posts.created_at DESC";
             break;
+        case 'your-posts':
+            session_start();
+            if (!isset($_SESSION['user_id'])) {
+                echo json_encode(['error' => true, 'message' => 'User not logged in.']);
+                exit;
+            }
+            $userId = $_SESSION['user_id'];
+            $sql .= (!empty($conditions) ? " AND" : " WHERE") . " posts.user_id = :user_id";
+            $params[':user_id'] = $userId;
+            $sql .= " ORDER BY posts.created_at DESC";
+            break;
+        case 'recent':
         default:
-            $query .= " ORDER BY p.created_at DESC LIMIT 10";
+            $sql .= " ORDER BY posts.created_at DESC";
             break;
     }
 
-    $stmt = $pdo->prepare($query);
+    $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    foreach ($posts as &$post) {
-        // Like count
-        $likeStmt = $pdo->prepare("SELECT COUNT(*) as like_count FROM liked_posts WHERE post_id = ?");
-        $likeStmt->execute([$post['post_id']]);
-        $post['like_count'] = $likeStmt->fetchColumn();
-
-        // Comment count
-        $commentStmt = $pdo->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
-        $commentStmt->execute([$post['post_id']]);
-        $post['comment_count'] = $commentStmt->fetchColumn();
-    }
-
     echo json_encode($posts);
-} catch (Exception $e) {
-    error_log("fetch_posts.php error: " . $e->getMessage());
-    echo json_encode(['error' => true, 'message' => 'Failed to load posts.']);
+} catch (PDOException $e) {
+    echo json_encode(['error' => true, 'message' => 'Error fetching posts: ' . $e->getMessage()]);
 }
+?>
