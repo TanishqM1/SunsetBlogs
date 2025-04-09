@@ -1,5 +1,5 @@
 <?php
-require_once './db_connection.php'; // Ensure this contains your database connection
+require_once '../config/database.php'; 
 
 header("Content-Type: application/json");
 
@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit;
         }
 
-        $stmt = $conn->prepare("INSERT INTO inquiry (first_name, last_name, question) VALUES (:first_name, :last_name, :question)");
+        $stmt = $pdo->prepare("INSERT INTO inquiry (first_name, last_name, question) VALUES (:first_name, :last_name, :question)");
         $stmt->bindParam(":first_name", $firstName);
         $stmt->bindParam(":last_name", $lastName);
         $stmt->bindParam(":question", $question);
