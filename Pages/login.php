@@ -1,79 +1,53 @@
 <?php
-// Enable error reporting for debugging
-error_reporting(E_ALL);
+// Error and content setup
 ini_set('display_errors', 0);
-
-// Set header to return JSON
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
 header('Content-Type: application/json');
 
+// Load PDO connection
+require_once '../config/database.php';
+
+function respond($success, $data = []) {
+    echo json_encode(array_merge(['success' => $success], $data));
+    exit;
+}
+
 try {
-    // Database connection details
-    $host = 'localhost';
-    $dbname = 'kmercha1';
-    $username = 'kmercha1';
-    $password = 'kmercha1';
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        throw new Exception('Database connection failed: ' . $conn->connect_error);
-    }
-
-    // Get POST data
+    // Parse JSON input
     $input = file_get_contents('php://input');
     if (!$input) {
-        throw new Exception('No input received');
+        respond(false, ['message' => 'No input received']);
     }
 
     $data = json_decode($input, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
-        throw new Exception('Invalid JSON data received');
+        respond(false, ['message' => 'Invalid JSON']);
     }
 
-    $email = $data['email'] ?? '';
+    $email = trim($data['email'] ?? '');
     $password = $data['password'] ?? '';
 
-    // Validate input
-    if (empty($email) || empty($password)) {
-        throw new Exception('Please fill in all fields');
+    if (!$email || !$password) {
+        respond(false, ['message' => 'Please fill in all fields']);
     }
 
-    // Check if user exists with matching email and password
-    $sql = "SELECT user_id, username FROM users WHERE email = ? AND password_hash = ?";
-    $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        throw new Exception('Prepare failed: ' . $conn->error);
-    }
-    $stmt->bind_param("ss", $email, $password);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Fetch user by email
+    $stmt = $pdo->prepare("SELECT user_id, username, password_hash FROM users WHERE email = :email");
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result->num_rows === 0) {
-        throw new Exception('Invalid email or password');
+    if (!$user || !password_verify($password, $user['password_hash'])) {
+        respond(false, ['message' => 'Invalid email or password']);
     }
 
-    $user = $result->fetch_assoc();
-    
-    // Start session and store user data
+    // Valid login — set session
     session_start();
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
-    
-    echo json_encode([
-        'success' => true,
-        'username' => $user['username']
-    ]);
+
+    respond(true, ['username' => $user['username']]);
 
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
-} finally {
-    if (isset($conn)) {
-        $conn->close();
-    }
+    respond(false, ['message' => 'Server error: ' . $e->getMessage()]);
 }
-?> 
