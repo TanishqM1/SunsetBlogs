@@ -381,7 +381,7 @@ $content = json_decode($post['content'], true);
                 });
 
             // Periodically check for new comments
-            setInterval(fetchNewComments, 20000); // Check every 20 seconds
+            setInterval(fetchNewComments, 5000); // Check every 5 seconds
         });
     </script>
 </body>
