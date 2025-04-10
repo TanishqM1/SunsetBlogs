@@ -202,6 +202,19 @@ $content = json_decode($post['content'], true);
             const commentInput = document.querySelector('.comment-input');
             const submitCommentBtn = document.querySelector('.submit-comment');
             const commentList = document.querySelector('.comment-list');
+            const postId = submitCommentBtn.dataset.postId;
+            let lastCommentId = null;
+            const displayedCommentIds = new Set();
+            
+            // Initialize displayedCommentIds with existing comments
+            document.querySelectorAll('.comment').forEach(comment => {
+                // Add data-comment-id attribute to existing comments in the DOM
+                if (comment.dataset.commentId) {
+                    displayedCommentIds.add(parseInt(comment.dataset.commentId));
+                }
+            });
+            
+            console.log("Initial displayedCommentIds:", Array.from(displayedCommentIds));
             
             // Like button functionality
             likeBtn.addEventListener('click', function() {
@@ -257,9 +270,18 @@ $content = json_decode($post['content'], true);
                         // Clear the input
                         commentInput.value = '';
                         
+                        // Get the comment ID and ensure it's an integer
+                        const commentId = parseInt(data.comment.comment_id);
+                        
+                        // Add to tracking set to prevent duplication
+                        displayedCommentIds.add(commentId);
+                        console.log("Added comment ID to set:", commentId);
+                        console.log("Current displayedCommentIds:", Array.from(displayedCommentIds));
+                        
                         // Add the new comment to the list
                         const newComment = document.createElement('li');
                         newComment.className = 'comment';
+                        newComment.dataset.commentId = commentId;
                         newComment.innerHTML = `
                             <div class="comment-header">
                                 <span class="comment-author">${data.comment.username}</span>
@@ -272,6 +294,11 @@ $content = json_decode($post['content'], true);
                         
                         // Add the new comment at the top of the list
                         commentList.insertBefore(newComment, commentList.firstChild);
+                        
+                        // Update lastCommentId if this is a newer comment
+                        if (!lastCommentId || commentId > lastCommentId) {
+                            lastCommentId = commentId;
+                        }
                     } else {
                         alert(data.message);
                     }
@@ -282,29 +309,48 @@ $content = json_decode($post['content'], true);
                 });
             });
 
-            const postId = document.querySelector('.submit-comment').dataset.postId;
-            let lastCommentId = null;
-
             function fetchNewComments() {
+                console.log("Fetching new comments with lastCommentId:", lastCommentId);
+                
                 fetch(`fetch_new_comments.php?post_id=${postId}&last_comment_id=${lastCommentId}`)
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success && data.comments.length > 0) {
+                        if (data.success && data.comments && data.comments.length > 0) {
+                            console.log("Received comments:", data.comments);
+                            
+                            let newLastCommentId = lastCommentId;
+                            
                             data.comments.forEach(comment => {
-                                const newComment = document.createElement('li');
-                                newComment.className = 'comment';
-                                newComment.innerHTML = `
-                                    <div class="comment-header">
-                                        <span class="comment-author">${comment.username}</span>
-                                        <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
-                                    </div>
-                                    <div class="comment-content">
-                                        ${comment.content}
-                                    </div>
-                                `;
-                                commentList.insertBefore(newComment, commentList.firstChild);
+                                const commentId = parseInt(comment.comment_id);
+                                console.log("Processing comment ID:", commentId, "Is in set?", displayedCommentIds.has(commentId));
+                                
+                                if (!displayedCommentIds.has(commentId)) {
+                                    const newComment = document.createElement('li');
+                                    newComment.className = 'comment';
+                                    newComment.dataset.commentId = commentId;
+                                    newComment.innerHTML = `
+                                        <div class="comment-header">
+                                            <span class="comment-author">${comment.username}</span>
+                                            <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+                                        </div>
+                                        <div class="comment-content">
+                                            ${comment.content}
+                                        </div>
+                                    `;
+                                    commentList.insertBefore(newComment, commentList.firstChild);
+                                    displayedCommentIds.add(commentId);
+                                    console.log("Added comment to DOM, ID:", commentId);
+                                    
+                                    if (commentId > newLastCommentId) {
+                                        newLastCommentId = commentId;
+                                    }
+                                }
                             });
-                            lastCommentId = data.comments[0].comment_id;
+                            
+                            if (newLastCommentId > lastCommentId) {
+                                lastCommentId = newLastCommentId;
+                                console.log("Updated lastCommentId to:", lastCommentId);
+                            }
                         }
                     })
                     .catch(error => console.error('Error fetching new comments:', error));
@@ -314,8 +360,23 @@ $content = json_decode($post['content'], true);
             fetch(`fetch_comments.php?post_id=${postId}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.length > 0) {
-                        lastCommentId = data[0].comment_id;
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(comment => {
+                            const commentId = parseInt(comment.comment_id);
+                            displayedCommentIds.add(commentId);
+                            
+                            // Also add data-comment-id attribute to existing comments in the DOM
+                            const existingComments = document.querySelectorAll('.comment');
+                            existingComments.forEach((existingComment, index) => {
+                                if (index < data.length) {
+                                    existingComment.dataset.commentId = data[index].comment_id;
+                                }
+                            });
+                        });
+                        
+                        lastCommentId = Math.max(...data.map(comment => parseInt(comment.comment_id)));
+                        console.log("Initial lastCommentId set to:", lastCommentId);
+                        console.log("Initial displayedCommentIds:", Array.from(displayedCommentIds));
                     }
                 });
 

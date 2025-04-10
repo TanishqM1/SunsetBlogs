@@ -1,68 +1,57 @@
 <?php
+session_start();
 require_once '../config/database.php';
-require_once '../config/session.php';
-requireLogin();
 
 header('Content-Type: application/json');
 
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    echo json_encode(['success' => false, 'message' => 'You must be logged in to comment']);
+    exit;
+}
+
+// Check if all required fields are present
+if (!isset($_POST['post_id']) || !isset($_POST['content'])) {
+    echo json_encode(['success' => false, 'message' => 'Missing required fields']);
+    exit;
+}
+
+$user_id = $_SESSION['user_id'];
+$post_id = $_POST['post_id'];
+$content = trim($_POST['content']);
+
+// Validate content
+if (empty($content)) {
+    echo json_encode(['success' => false, 'message' => 'Comment cannot be empty']);
+    exit;
+}
+
 try {
-    // Get post_id and content from POST request
-    $post_id = $_POST['post_id'] ?? null;
-    $content = $_POST['content'] ?? null;
-    
-    if (!$post_id || !$content) {
-        throw new Exception('Post ID and content are required');
-    }
-
-    if (trim($content) === '') {
-        throw new Exception('Comment cannot be empty');
-    }
-
-    // Get current user's ID from session
-    $user_id = $_SESSION['user_id'];
-
     // Insert the comment
-    $stmt = $pdo->prepare("INSERT INTO comments (user_id, post_id, content) VALUES (?, ?, ?)");
-    $stmt->execute([$user_id, $post_id, $content]);
+    $stmt = $pdo->prepare("INSERT INTO comments (post_id, user_id, content) VALUES (?, ?, ?)");
+    $stmt->execute([$post_id, $user_id, $content]);
     
-    // Get the inserted comment with username
+    // Get the comment ID
     $comment_id = $pdo->lastInsertId();
-    $get_comment = $pdo->prepare("
-        SELECT c.*, u.username 
-        FROM comments c 
-        JOIN users u ON c.user_id = u.user_id 
-        WHERE c.comment_id = ?
-    ");
-    $get_comment->execute([$comment_id]);
-    $comment = $get_comment->fetch(PDO::FETCH_ASSOC);
+    
+    // Get the username for the response
+    $user_stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+    $user_stmt->execute([$user_id]);
+    $user = $user_stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Get the comment data for the response
+    $comment_stmt = $pdo->prepare("SELECT * FROM comments WHERE comment_id = ?");
+    $comment_stmt->execute([$comment_id]);
+    $comment = $comment_stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Add username to the comment data
+    $comment['username'] = $user['username'];
     
     echo json_encode([
-        'success' => true,
+        'success' => true, 
         'message' => 'Comment added successfully',
-        'comment' => [
-            'id' => $comment['comment_id'],
-            'content' => $comment['content'],
-            'username' => $comment['username'],
-            'created_at' => $comment['created_at']
-        ]
+        'comment' => $comment
     ]);
-
-} catch (PDOException $e) {
-    // Check for foreign key constraint violation
-    if ($e->getCode() == 23000 || 22007) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Interacting with a post requires you to log in!'
-        ]);
-    } else {
-        echo json_encode([
-            'success' => false,
-            'message' => $e->getMessage()
-        ]);
-    }
 } catch (Exception $e) {
-    echo json_encode([
-        'success' => false,
-        'message' => $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Error adding comment: ' . $e->getMessage()]);
 } 

@@ -6,7 +6,13 @@ header('Content-Type: application/json');
 $lastPostId = isset($_GET['last_post_id']) ? (int)$_GET['last_post_id'] : 0;
 
 try {
-    $stmt = $pdo->prepare("SELECT * FROM posts WHERE post_id > ? ORDER BY post_id DESC");
+    $stmt = $pdo->prepare("
+        SELECT p.*, u.username as author 
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        WHERE p.post_id > ? 
+        ORDER BY p.post_id DESC
+    ");
     $stmt->execute([$lastPostId]);
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
