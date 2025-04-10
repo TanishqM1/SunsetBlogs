@@ -7,11 +7,11 @@ requireLogin();
 header('Content-Type: application/json');
 
 // Check if the user is admin
-$stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+$stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ?");
 $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
-if ($user['username'] !== 'Admin') {
+if ($user['user_id'] != 6) {
     echo json_encode([
         'success' => false,
         'message' => 'Unauthorized access'
