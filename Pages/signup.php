@@ -45,9 +45,11 @@ if ($profilePicture['size'] > 5 * 1024 * 1024) {
 }
 
 // File handling
-$uploadDir = '../uploads/';
+$uploadDir = dirname(dirname(__DIR__)) . '/file_uploads/';
 if (!file_exists($uploadDir)) {
-    mkdir($uploadDir, 0755, true);
+    if (!mkdir($uploadDir, 0777, true)) {
+        respond(false, 'Failed to create upload directory.');
+    }
 }
 
 $ext = pathinfo($profilePicture['name'], PATHINFO_EXTENSION);
@@ -77,7 +79,7 @@ try {
         'username' => $username,
         'email' => $email,
         'password_hash' => $hashedPassword,
-        'profile_image' => $filename
+        'profile_image' => '../file_uploads/' . $filename
     ]);
     
      // Get inserted user ID
