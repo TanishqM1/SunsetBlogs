@@ -203,6 +203,117 @@
 
             // Initial fetch of posts
             fetchPosts('fetch_posts.php');
+
+            const postsContainer = document.getElementById('posts-container');
+            let lastPostId = null;
+
+            function fetchNewPosts() {
+                fetch('fetch_new_posts.php?last_post_id=' + lastPostId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.posts.length > 0) {
+                            data.posts.forEach(post => {
+                                const postElement = document.createElement('div');
+                                postElement.className = 'post-card';
+                                postElement.innerHTML = `
+                                    <div class="post-image" style="background-image: url('${post.thumbnail_image ? '../../file_uploads/' + post.thumbnail_image.split('/').pop() : '../Images/sun.png'}')">
+                                        ${!post.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
+                                    </div>
+                                    <div class="post-content">
+                                        <a href="view-blog.php?id=${post.post_id}">
+                                            <h2>${post.title}</h2>
+                                        </a>
+                                        <div class="post-meta">
+                                            <span>By ${post.author}</span>
+                                            <span>${new Date(post.created_at).toLocaleDateString()}</span>
+                                        </div>
+                                        <div class="post-stats">
+                                            <span class="likes">❤ ${post.like_count || 0} likes</span>
+                                            <span class="comments">💬 ${post.comment_count || 0} comments</span>
+                                        </div>
+                                        <div class="post-tags">
+                                            <span class="category">${post.category}</span>
+                                            ${post.tags ? `<span class="tags">${post.tags}</span>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                                postsContainer.prepend(postElement);
+                            });
+                            lastPostId = data.posts[0].post_id;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching new posts:', error));
+            }
+
+            function updateLikes() {
+                fetch('fetch_likes.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            data.likes.forEach(like => {
+                                const likeElement = document.querySelector(`.post-card[data-post-id="${like.post_id}"] .likes`);
+                                if (likeElement) {
+                                    likeElement.textContent = `❤ ${like.like_count} likes`;
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error updating likes:', error));
+            }
+
+            // Initial fetch to set the lastPostId
+            fetch('fetch_posts.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        lastPostId = data[0].post_id;
+                    }
+                });
+
+            // Periodically check for new posts and updated likes
+            setInterval(fetchNewPosts, 30000); // Check every 30 seconds
+            setInterval(updateLikes, 15000); // Check every 15 seconds
+
+            const commentList = document.querySelector('.comment-list');
+            const postId = document.querySelector('.submit-comment').dataset.postId;
+            let lastCommentId = null;
+
+            function fetchNewComments() {
+                fetch(`fetch_new_comments.php?post_id=${postId}&last_comment_id=${lastCommentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.comments.length > 0) {
+                            data.comments.forEach(comment => {
+                                const newComment = document.createElement('li');
+                                newComment.className = 'comment';
+                                newComment.innerHTML = `
+                                    <div class="comment-header">
+                                        <span class="comment-author">${comment.username}</span>
+                                        <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        ${comment.content}
+                                    </div>
+                                `;
+                                commentList.insertBefore(newComment, commentList.firstChild);
+                            });
+                            lastCommentId = data.comments[0].comment_id;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching new comments:', error));
+            }
+
+            // Initial fetch to set the lastCommentId
+            fetch(`fetch_comments.php?post_id=${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        lastCommentId = data[0].comment_id;
+                    }
+                });
+
+            // Periodically check for new comments
+            setInterval(fetchNewComments, 20000); // Check every 20 seconds
         });
     </script>
 </body>

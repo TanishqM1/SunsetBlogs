@@ -281,6 +281,46 @@ $content = json_decode($post['content'], true);
                     alert('An error occurred while adding your comment');
                 });
             });
+
+            const postId = document.querySelector('.submit-comment').dataset.postId;
+            let lastCommentId = null;
+
+            function fetchNewComments() {
+                fetch(`fetch_new_comments.php?post_id=${postId}&last_comment_id=${lastCommentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.comments.length > 0) {
+                            data.comments.forEach(comment => {
+                                const newComment = document.createElement('li');
+                                newComment.className = 'comment';
+                                newComment.innerHTML = `
+                                    <div class="comment-header">
+                                        <span class="comment-author">${comment.username}</span>
+                                        <span class="comment-date">${new Date(comment.created_at).toLocaleString()}</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        ${comment.content}
+                                    </div>
+                                `;
+                                commentList.insertBefore(newComment, commentList.firstChild);
+                            });
+                            lastCommentId = data.comments[0].comment_id;
+                        }
+                    })
+                    .catch(error => console.error('Error fetching new comments:', error));
+            }
+
+            // Initial fetch to set the lastCommentId
+            fetch(`fetch_comments.php?post_id=${postId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 0) {
+                        lastCommentId = data[0].comment_id;
+                    }
+                });
+
+            // Periodically check for new comments
+            setInterval(fetchNewComments, 20000); // Check every 20 seconds
         });
     </script>
 </body>
