@@ -12,11 +12,73 @@ $user = $stmt->fetch();
 // Check if the logged-in user is admin
 $isAdmin = isAdmin();
 
-// If admin, get all users
+// If admin, get all users and site statistics
 $allUsers = [];
+$stats = [];
 if ($isAdmin) {
-    $stmt = $pdo->query("SELECT * FROM users ORDER BY user_id");
+    // Get search parameters if provided
+    $search = $_GET['search'] ?? '';
+    $searchType = $_GET['search_type'] ?? 'username';
+    
+    if (!empty($search)) {
+        // Search for users based on search type
+        if ($searchType === 'username') {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) LIKE LOWER(?) ORDER BY user_id");
+            $stmt->execute(['%' . $search . '%']);
+        } elseif ($searchType === 'email') {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE LOWER(email) LIKE LOWER(?) ORDER BY user_id");
+            $stmt->execute(['%' . $search . '%']);
+        } elseif ($searchType === 'post') {
+            // Search users who have posts containing the search term in title or content
+            $stmt = $pdo->prepare("
+                SELECT DISTINCT u.* 
+                FROM users u 
+                JOIN posts p ON u.user_id = p.user_id 
+                WHERE LOWER(p.title) LIKE LOWER(?) OR LOWER(p.content) LIKE LOWER(?) 
+                ORDER BY u.user_id
+            ");
+            $stmt->execute(['%' . $search . '%', '%' . $search . '%']);
+        }
+    } else {
+        // No search, get all users
+        $stmt = $pdo->query("SELECT * FROM users ORDER BY user_id");
+    }
     $allUsers = $stmt->fetchAll();
+    
+    // Get site statistics
+    // Total users
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM users");
+    $totalUsers = $stmt->fetch()['total'];
+    
+    // New users in the last 30 days
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)");
+    $newUsers = $stmt->fetch()['total'];
+    
+    // Total posts
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM posts");
+    $totalPosts = $stmt->fetch()['total'];
+    
+    // New posts in the last 30 days
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM posts WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)");
+    $newPosts = $stmt->fetch()['total'];
+    
+    // Total comments
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM comments");
+    $totalComments = $stmt->fetch()['total'];
+    
+    // New comments in the last 30 days
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM comments WHERE created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)");
+    $newComments = $stmt->fetch()['total'];
+    
+    // Store all stats in an array
+    $stats = [
+        'totalUsers' => $totalUsers,
+        'newUsers' => $newUsers,
+        'totalPosts' => $totalPosts,
+        'newPosts' => $newPosts,
+        'totalComments' => $totalComments,
+        'newComments' => $newComments
+    ];
 }
 //Check if username or profile image is missing
 if (empty($user['username']) || empty($user['profile_image'])) {
@@ -200,6 +262,76 @@ if (empty($user['username']) || empty($user['profile_image'])) {
             background: #c82333;
         }
 
+        /* Statistics Styles */
+        .stats-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            flex: 1;
+            min-width: 200px;
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-new {
+            font-size: 0.9rem;
+            color: #28a745;
+        }
+
+        /* Search Form Styles */
+        .search-container {
+            margin-bottom: 1.5rem;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .search-form .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .search-form .form-col {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            margin-left: 0.5rem;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -285,6 +417,85 @@ if (empty($user['username']) || empty($user['profile_image'])) {
             padding-bottom: 1rem;
             border-bottom: 1px solid #eee;
         }
+
+        /* Advanced Statistics Styles */
+        .advanced-stats-container {
+            margin-top: 2rem;
+            background-color: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        
+        .advanced-stats-container h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 1.5rem;
+        }
+        
+        .stats-item {
+            background-color: white;
+            padding: 1.2rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-item h4 {
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .search-status {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        .user-table-container {
+            position: relative;
+            min-height: 100px;
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            display: none;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -304,36 +515,119 @@ if (empty($user['username']) || empty($user['profile_image'])) {
 
         <?php if ($isAdmin): ?>
             <h1>Admin Dashboard</h1>
+            
+            <!-- Site Statistics Section -->
+            <div class="profile-section">
+                <h2>Site Statistics</h2>
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <h3>Users</h3>
+                        <div class="stat-number"><?php echo $stats['totalUsers']; ?></div>
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-new">+<?php echo $stats['newUsers']; ?> in the last 30 days</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Posts</h3>
+                        <div class="stat-number"><?php echo $stats['totalPosts']; ?></div>
+                        <div class="stat-label">Total Posts</div>
+                        <div class="stat-new">+<?php echo $stats['newPosts']; ?> in the last 30 days</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Comments</h3>
+                        <div class="stat-number"><?php echo $stats['totalComments']; ?></div>
+                        <div class="stat-label">Total Comments</div>
+                        <div class="stat-new">+<?php echo $stats['newComments']; ?> in the last 30 days</div>
+                    </div>
+                </div>
+                
+                <div class="advanced-stats-container">
+                    <h3>Advanced Statistics</h3>
+                    <div class="form-row">
+                        <div class="form-col">
+                            <select id="stats-period" class="form-control">
+                                <option value="7">Last 7 days</option>
+                                <option value="30" selected>Last 30 days</option>
+                                <option value="90">Last 90 days</option>
+                                <option value="365">Last year</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <button id="refresh-stats" class="btn">Refresh Stats</button>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stats-item" id="avg-posts-per-user">
+                            <h4>Avg. Posts Per User</h4>
+                            <div class="stat-value">Loading...</div>
+                        </div>
+                        <div class="stats-item" id="most-active-user">
+                            <h4>Most Active User</h4>
+                            <div class="stat-value">Loading...</div>
+                        </div>
+                        <div class="stats-item" id="most-popular-category">
+                            <h4>Most Popular Category</h4>
+                            <div class="stat-value">Loading...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="profile-section">
                 <h2>User Management</h2>
-                <table class="users-table">
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Created At</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($allUsers as $userData): ?>
+                <!-- User Search Form -->
+                <div class="search-container">
+                    <div class="form-row">
+                        <div class="form-col">
+                            <input type="text" id="search-input" class="form-control" placeholder="Search users..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                        </div>
+                        <div class="form-col">
+                            <select id="search-type" class="form-control">
+                                <option value="username" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] === 'username') ? 'selected' : ''; ?>>Search by Username</option>
+                                <option value="email" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] === 'email') ? 'selected' : ''; ?>>Search by Email</option>
+                                <option value="post" <?php echo (isset($_GET['search_type']) && $_GET['search_type'] === 'post') ? 'selected' : ''; ?>>Search by Post Content</option>
+                            </select>
+                        </div>
+                        <div class="form-col">
+                            <button id="clear-search" class="btn btn-secondary">Clear</button>
+                        </div>
+                    </div>
+                    <div class="search-status" id="search-status"></div>
+                </div>
+                
+                <div class="user-table-container">
+                    <div class="loading-overlay">
+                        <div class="spinner"></div>
+                    </div>
+                    <table class="users-table">
+                        <thead>
                             <tr>
-                                <td><?php echo htmlspecialchars($userData['user_id']); ?></td>
-                                <td><?php echo htmlspecialchars($userData['username']); ?></td>
-                                <td><?php echo htmlspecialchars($userData['email']); ?></td>
-                                <td><?php echo htmlspecialchars($userData['created_at']); ?></td>
-                                <td>
-                                    <?php if ($userData['username'] !== 'Admin'): // Prevent deleting admin account ?>
-                                        <button class="delete-btn" onclick="deleteUser(<?php echo $userData['user_id']; ?>)">
-                                            Delete
-                                        </button>
-                                    <?php endif; ?>
-                                </td>
+                                <th>User ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Created At</th>
+                                <th>Actions</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <?php foreach ($allUsers as $userData): ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($userData['user_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($userData['username']); ?></td>
+                                    <td><?php echo htmlspecialchars($userData['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($userData['created_at']); ?></td>
+                                    <td>
+                                        <?php if ($userData['username'] !== 'Admin'): // Prevent deleting admin account ?>
+                                            <button class="delete-btn" onclick="deleteUser(<?php echo $userData['user_id']; ?>)">
+                                                Delete
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="profile-section">
@@ -802,6 +1096,189 @@ if (empty($user['username']) || empty($user['profile_image'])) {
                 showAlert('An error occurred while updating the post: ' + error.message, 'error');
             });
         }
+
+        // Function to load advanced statistics
+        function loadAdvancedStats(period = 30) {
+            fetch('get_stats.php?period=' + period)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const stats = data.stats;
+                        
+                        // Update basic stats
+                        document.querySelector('.stat-card:nth-child(1) .stat-number').textContent = stats.users.total;
+                        document.querySelector('.stat-card:nth-child(1) .stat-new').textContent = 
+                            '+' + stats.users.new + ' in the last ' + period + ' days';
+                            
+                        document.querySelector('.stat-card:nth-child(2) .stat-number').textContent = stats.posts.total;
+                        document.querySelector('.stat-card:nth-child(2) .stat-new').textContent = 
+                            '+' + stats.posts.new + ' in the last ' + period + ' days';
+                            
+                        document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = stats.comments.total;
+                        document.querySelector('.stat-card:nth-child(3) .stat-new').textContent = 
+                            '+' + stats.comments.new + ' in the last ' + period + ' days';
+                        
+                        // Update advanced stats
+                        document.querySelector('#avg-posts-per-user .stat-value').textContent = 
+                            stats.avg_posts_per_user;
+                            
+                        if (stats.most_active_user) {
+                            document.querySelector('#most-active-user .stat-value').textContent = 
+                                stats.most_active_user.username + ' (' + stats.most_active_user.post_count + ' posts)';
+                        } else {
+                            document.querySelector('#most-active-user .stat-value').textContent = 'No posts yet';
+                        }
+                        
+                        if (stats.most_popular_category) {
+                            document.querySelector('#most-popular-category .stat-value').textContent = 
+                                stats.most_popular_category.name + ' (' + stats.most_popular_category.post_count + ' posts)';
+                        } else {
+                            document.querySelector('#most-popular-category .stat-value').textContent = 'No posts yet';
+                        }
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert('Error loading statistics: ' + error.message, 'error');
+                });
+        }
+        
+        // Initialize the dashboard functionality when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize stats
+            loadAdvancedStats(30);
+            
+            // Set up event listener for period change
+            const statsPeriodSelect = document.getElementById('stats-period');
+            const refreshStatsButton = document.getElementById('refresh-stats');
+            
+            if (statsPeriodSelect && refreshStatsButton) {
+                refreshStatsButton.addEventListener('click', function() {
+                    const period = statsPeriodSelect.value;
+                    loadAdvancedStats(period);
+                });
+            }
+            
+            // Live search functionality
+            const searchInput = document.getElementById('search-input');
+            const searchType = document.getElementById('search-type');
+            const clearSearch = document.getElementById('clear-search');
+            const usersTableBody = document.getElementById('users-table-body');
+            const searchStatus = document.getElementById('search-status');
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            
+            let searchTimeout = null;
+            
+            if (searchInput && searchType && usersTableBody) {
+                // Function to perform search
+                function performSearch() {
+                    const searchValue = searchInput.value.trim();
+                    const typeValue = searchType.value;
+                    
+                    // Show loading state
+                    loadingOverlay.style.display = 'flex';
+                    
+                    // Make AJAX request to search_users.php
+                    fetch(`search_users.php?search=${encodeURIComponent(searchValue)}&search_type=${encodeURIComponent(typeValue)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Clear the table
+                                usersTableBody.innerHTML = '';
+                                
+                                if (data.users.length === 0) {
+                                    searchStatus.textContent = 'No users found matching your search.';
+                                    // Create an empty row
+                                    const emptyRow = document.createElement('tr');
+                                    const emptyCell = document.createElement('td');
+                                    emptyCell.setAttribute('colspan', '5');
+                                    emptyCell.textContent = 'No users found.';
+                                    emptyCell.style.textAlign = 'center';
+                                    emptyRow.appendChild(emptyCell);
+                                    usersTableBody.appendChild(emptyRow);
+                                } else {
+                                    searchStatus.textContent = `Found ${data.count} user(s).`;
+                                    
+                                    // Add users to table
+                                    data.users.forEach(user => {
+                                        const tr = document.createElement('tr');
+                                        
+                                        // User ID
+                                        const tdId = document.createElement('td');
+                                        tdId.textContent = user.user_id;
+                                        tr.appendChild(tdId);
+                                        
+                                        // Username
+                                        const tdUsername = document.createElement('td');
+                                        tdUsername.textContent = user.username;
+                                        tr.appendChild(tdUsername);
+                                        
+                                        // Email
+                                        const tdEmail = document.createElement('td');
+                                        tdEmail.textContent = user.email;
+                                        tr.appendChild(tdEmail);
+                                        
+                                        // Created At
+                                        const tdCreated = document.createElement('td');
+                                        tdCreated.textContent = user.created_at;
+                                        tr.appendChild(tdCreated);
+                                        
+                                        // Actions
+                                        const tdActions = document.createElement('td');
+                                        if (user.username !== 'Admin') {
+                                            const deleteBtn = document.createElement('button');
+                                            deleteBtn.className = 'delete-btn';
+                                            deleteBtn.textContent = 'Delete';
+                                            deleteBtn.onclick = function() { deleteUser(user.user_id); };
+                                            tdActions.appendChild(deleteBtn);
+                                        }
+                                        tr.appendChild(tdActions);
+                                        
+                                        usersTableBody.appendChild(tr);
+                                    });
+                                }
+                            } else {
+                                searchStatus.textContent = 'Error performing search: ' + data.message;
+                            }
+                            // Hide loading state
+                            loadingOverlay.style.display = 'none';
+                        })
+                        .catch(error => {
+                            searchStatus.textContent = 'Error connecting to the server.';
+                            console.error('Search error:', error);
+                            loadingOverlay.style.display = 'none';
+                        });
+                }
+                
+                // Add input event listener with debounce
+                searchInput.addEventListener('input', function() {
+                    // Clear previous timeout
+                    if (searchTimeout) {
+                        clearTimeout(searchTimeout);
+                    }
+                    
+                    // Set new timeout (300ms delay)
+                    searchTimeout = setTimeout(() => {
+                        performSearch();
+                    }, 300);
+                });
+                
+                // Add change event listener for search type
+                searchType.addEventListener('change', performSearch);
+                
+                // Clear search
+                clearSearch.addEventListener('click', function() {
+                    searchInput.value = '';
+                    performSearch();
+                });
+                
+                // If there's an initial search value, perform the search
+                if (searchInput.value.trim() !== '') {
+                    performSearch();
+                }
+            }
+        });
         <?php endif; ?>
     </script>
 </body>
