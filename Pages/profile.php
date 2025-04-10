@@ -9,7 +9,7 @@ $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
 // Check if the logged-in user is admin
-$isAdmin = ($user['username'] === 'Admin');
+$isAdmin = ($user['user_id'] == 6);
 
 // If admin, get all users
 $allUsers = [];
