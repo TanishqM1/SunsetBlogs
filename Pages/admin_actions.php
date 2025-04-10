@@ -16,7 +16,13 @@ $response = ['success' => false, 'message' => 'Invalid action'];
 switch ($action) {
     case 'delete_user':
         $userId = $_POST['user_id'] ?? 0;
-        if ($userId == 6) { // Prevent deleting admin account
+        
+        // Check if the user to delete is an admin
+        $stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        $userToDelete = $stmt->fetch();
+        
+        if ($userToDelete && $userToDelete['username'] === 'Admin') { // Prevent deleting admin account
             $response = ['success' => false, 'message' => 'Cannot delete admin account'];
         } else if (deleteUser($userId)) {
             $response = ['success' => true, 'message' => 'User deleted successfully'];

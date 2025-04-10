@@ -1,6 +1,7 @@
 <?php
 require_once '../config/database.php';
 require_once '../config/session.php';
+require_once '../config/admin_functions.php';
 requireLogin();
 
 // Get user details
@@ -9,7 +10,7 @@ $stmt->execute([$_SESSION['user_id']]);
 $user = $stmt->fetch();
 
 // Check if the logged-in user is admin
-$isAdmin = ($user['user_id'] == 6);
+$isAdmin = isAdmin();
 
 // If admin, get all users
 $allUsers = [];
@@ -323,7 +324,7 @@ if (empty($user['username']) || empty($user['profile_image'])) {
                                 <td><?php echo htmlspecialchars($userData['email']); ?></td>
                                 <td><?php echo htmlspecialchars($userData['created_at']); ?></td>
                                 <td>
-                                    <?php if ($userData['user_id'] != 6): // Prevent deleting admin account ?>
+                                    <?php if ($userData['username'] !== 'Admin'): // Prevent deleting admin account ?>
                                         <button class="delete-btn" onclick="deleteUser(<?php echo $userData['user_id']; ?>)">
                                             Delete
                                         </button>
