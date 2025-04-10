@@ -3,7 +3,7 @@ require_once 'database.php';
 require_once 'session.php';
 
 function isAdmin() {
-    return isset($_SESSION['user_id']) && $_SESSION['user_id'] == 6;
+    return isset($_SESSION['username']) && $_SESSION['username'] === 'Admin';
 }
 
 function deleteUser($userId) {
