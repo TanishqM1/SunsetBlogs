@@ -3,8 +3,17 @@ require_once '../config/database.php';
 
 header('Content-Type: application/json');
 
+$lastPostId = isset($_GET['last_post_id']) ? (int)$_GET['last_post_id'] : 0;
+
 try {
-    $stmt = $pdo->query("SELECT * FROM posts ORDER BY post_id DESC");
+    $stmt = $pdo->prepare("
+        SELECT p.*, u.username as author 
+        FROM posts p
+        JOIN users u ON p.user_id = u.user_id
+        WHERE p.post_id > ? 
+        ORDER BY p.post_id DESC
+    ");
+    $stmt->execute([$lastPostId]);
     $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($posts as &$post) {
@@ -21,8 +30,7 @@ try {
         $post['comment_count'] = $commentCount['comment_count'];
     }
 
-    echo json_encode($posts);
+    echo json_encode(['success' => true, 'posts' => $posts]);
 } catch (Exception $e) {
-    echo json_encode(['error' => true, 'message' => 'Error fetching posts: ' . $e->getMessage()]);
-}
-?>
+    echo json_encode(['success' => false, 'message' => 'Error fetching new posts: ' . $e->getMessage()]);
+} 

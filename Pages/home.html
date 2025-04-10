@@ -65,7 +65,9 @@
             const searchInput = document.getElementById('search-input');
             const filterSelect = document.getElementById('filter-select');
             const categorySelect = document.getElementById('category-select');
+            const postsContainer = document.getElementById('posts-container');
             let allPosts = [];
+            let lastPostId = null;
 
             function filterPosts() {
                 const searchTerm = searchInput.value.toLowerCase();
@@ -93,6 +95,7 @@
                 posts.forEach(post => {
                     const postElement = document.createElement('div');
                     postElement.className = 'post-card';
+                    postElement.dataset.postId = post.post_id;
                     postElement.innerHTML = `
                         <div class="post-image" style="background-image: url('${post.thumbnail_image ? '../../file_uploads/' + post.thumbnail_image.split('/').pop() : '../Images/sun.png'}')">
                             ${!post.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
@@ -106,7 +109,7 @@
                                 <span>${new Date(post.created_at).toLocaleDateString()}</span>
                             </div>
                             <div class="post-stats">
-                                <span class="likes">❤ ${post.like_count || 0} likes</span>
+                                <span class="likes" data-post-id="${post.post_id}">❤ ${post.like_count || 0} likes</span>
                                 <span class="comments">💬 ${post.comment_count || 0} comments</span>
                             </div>
                             <div class="post-tags">
@@ -117,6 +120,67 @@
                     `;
                     postsContainer.appendChild(postElement);
                 });
+                
+                // Update lastPostId
+                if (posts.length > 0) {
+                    lastPostId = Math.max(...posts.map(post => parseInt(post.post_id)));
+                }
+            }
+
+            // Function to fetch new posts
+            function fetchNewPosts() {
+                fetch('fetch_new_posts.php?last_post_id=' + lastPostId)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.posts && data.posts.length > 0) {
+                            // Add new posts to allPosts array
+                            data.posts.forEach(newPost => {
+                                // Check if post already exists in allPosts
+                                const existingPostIndex = allPosts.findIndex(post => post.post_id === newPost.post_id);
+                                if (existingPostIndex === -1) {
+                                    allPosts.unshift(newPost);
+                                    
+                                    // Add the new post to the DOM
+                                    const postElement = document.createElement('div');
+                                    postElement.className = 'post-card';
+                                    postElement.dataset.postId = newPost.post_id;
+                                    postElement.innerHTML = `
+                                        <div class="post-image" style="background-image: url('${newPost.thumbnail_image ? '../../file_uploads/' + newPost.thumbnail_image.split('/').pop() : '../Images/sun.png'}')">
+                                            ${!newPost.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
+                                        </div>
+                                        <div class="post-content">
+                                            <a href="view-blog.php?id=${newPost.post_id}">
+                                                <h2>${newPost.title}</h2>
+                                            </a>
+                                            <div class="post-meta">
+                                                <span>By ${newPost.author}</span>
+                                                <span>${new Date(newPost.created_at).toLocaleDateString()}</span>
+                                            </div>
+                                            <div class="post-stats">
+                                                <span class="likes" data-post-id="${newPost.post_id}">❤ ${newPost.like_count || 0} likes</span>
+                                                <span class="comments">💬 ${newPost.comment_count || 0} comments</span>
+                                            </div>
+                                            <div class="post-tags">
+                                                <span class="category">${newPost.category}</span>
+                                                ${newPost.tags ? `<span class="tags">${newPost.tags}</span>` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                    
+                                    // Add the new post at the top of the container
+                                    if (postsContainer.firstChild) {
+                                        postsContainer.insertBefore(postElement, postsContainer.firstChild);
+                                    } else {
+                                        postsContainer.appendChild(postElement);
+                                    }
+                                }
+                            });
+                            
+                            // Update lastPostId
+                            lastPostId = Math.max(...data.posts.map(post => parseInt(post.post_id)), lastPostId);
+                        }
+                    })
+                    .catch(error => console.error('Error fetching new posts:', error));
             }
 
             // Add event listeners for filtering
@@ -201,8 +265,51 @@
                     });
             }
 
+            // Update like counts
+            function updateLikes() {
+                fetch('fetch_likes.php')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update the like counts in the allPosts array
+                            allPosts.forEach(post => {
+                                const likeInfo = data.likes.find(like => like.post_id == post.post_id);
+                                if (likeInfo) {
+                                    post.like_count = likeInfo.like_count;
+                                } else {
+                                    // If no likes found for this post, set to 0
+                                    post.like_count = 0;
+                                }
+                            });
+                            
+                            // Update the DOM
+                            data.likes.forEach(like => {
+                                const likeElements = document.querySelectorAll(`.likes[data-post-id="${like.post_id}"]`);
+                                likeElements.forEach(element => {
+                                    element.textContent = `❤ ${like.like_count} likes`;
+                                });
+                            });
+                            
+                            // Update elements for posts with 0 likes (that may have been unliked)
+                            allPosts.forEach(post => {
+                                if (!data.likes.some(like => like.post_id == post.post_id)) {
+                                    const likeElements = document.querySelectorAll(`.likes[data-post-id="${post.post_id}"]`);
+                                    likeElements.forEach(element => {
+                                        element.textContent = `❤ 0 likes`;
+                                    });
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error updating likes:', error));
+            }
+
             // Initial fetch of posts
             fetchPosts('fetch_posts.php');
+
+            // Periodically check for new posts and updated likes
+            setInterval(fetchNewPosts, 15000); // Check every 15 seconds
+            setInterval(updateLikes, 5000); // Check every 5 seconds
         });
     </script>
 </body>
