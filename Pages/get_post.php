@@ -1,6 +1,7 @@
 <?php
 require_once '../config/database.php';
 require_once '../config/session.php';
+require_once '../config/admin_functions.php';
 requireLogin();
 
 // Set the response header to JSON
@@ -12,11 +13,7 @@ ini_set('display_errors', 1);
 
 try {
     // Check if the user is admin
-    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE user_id = ?");
-    $stmt->execute([$_SESSION['user_id']]);
-    $user = $stmt->fetch();
-
-    if ($user['user_id'] != 6) {
+    if (!isAdmin()) {
         echo json_encode([
             'success' => false,
             'message' => 'Unauthorized access'

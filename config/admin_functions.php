@@ -3,7 +3,17 @@ require_once 'database.php';
 require_once 'session.php';
 
 function isAdmin() {
-    return isset($_SESSION['user_id']) && $_SESSION['user_id'] == 6;
+    global $pdo;
+    
+    if (!isset($_SESSION['user_id'])) {
+        return false;
+    }
+    
+    $stmt = $pdo->prepare("SELECT username FROM users WHERE user_id = ?");
+    $stmt->execute([$_SESSION['user_id']]);
+    $user = $stmt->fetch();
+    
+    return isset($user['username']) && $user['username'] === 'Admin';
 }
 
 function deleteUser($userId) {
