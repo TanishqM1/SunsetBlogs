@@ -196,6 +196,49 @@ For testing purposes, two pre-created accounts are available:
 - **Sample User Account**: 
   - Email: raad.sask@gmail.com 
   - Password: Raad7223
+// ... existing code ...
+
+## Known Limitations
+
+- Image uploads are limited to common formats (JPEG, PNG, GIF)
+- Rich text formatting is basic
+- Mobile responsiveness may have minor issues on certain devices
+
+## Unit Tests
+
+The application includes a comprehensive test suite to ensure code quality and functionality. Tests are organized into three categories:
+
+### Unit Tests
+- **UserTest.php**: Tests user management operations including creation, retrieval, updating, deletion, and validation of usernames, emails, and passwords.
+- **PostTest.php**: Validates blog post functionality including creation, update, retrieval by various parameters, and content validation.
+- **CommentTest.php**: Tests comment operations including adding comments to posts, retrieving comments, and validation.
+- **LikeTest.php**: Verifies post liking functionality, including toggling likes and counting likes per post.
+
+### Integration Tests
+- **UserPostsTest.php**: Tests the relationship between users and their posts, including post creation, retrieval, and filtering.
+- **PostCommentsTest.php**: Validates the interaction between posts and comments, including comment ordering and cascade deletion.
+- **LikesAnalyticsTest.php**: Tests analytics related to post popularity based on like counts.
+
+### Functional Tests
+- **AuthenticationTest.php**: End-to-end tests for user authentication flows including login, registration, password validation, and session handling.
+- **ContactFormTest.php**: Tests the contact form functionality including submission validation and database storage.
+
+### Running Tests
+
+Tests can be executed using the following commands:
+
+```bash
+# Run all tests
+php tests/runAllTests.php
+
+# Run specific test categories
+php tests/unit/UserTest.php
+php tests/integration/PostCommentsTest.php
+php tests/functional/AuthenticationTest.php
+```
+
+The test suite uses a mock database implementation to simulate database operations without affecting the production database. Custom assertion methods are provided via the TestHelper class to validate test results.
+
 
 ## Live Demo
 
