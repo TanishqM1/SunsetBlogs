@@ -9,7 +9,6 @@ Sunset Blogs is a full-featured blogging platform that allows users to:
 - Write and publish blogs with rich content
 - Discover content from other users
 - Like and comment on posts
-- Follow other users
 - Contact site administrators
 - Search for users and content
 
