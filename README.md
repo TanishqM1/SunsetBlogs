@@ -189,10 +189,10 @@ These updates occur without requiring page reloads, enhancing the user experienc
 ## Testing Credentials
 
 For testing purposes, two pre-created accounts are available:
-- **Admin Account**:
+- **Admin Account**: <br> 
   -Contact Admin for info
   
-- **Sample User Account**:  <br> 
+- **Sample User Account**:  
   - Email: raad.sask@gmail.com 
   - Password: Raad7223
 
