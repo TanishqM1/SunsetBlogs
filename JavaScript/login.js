@@ -5,6 +5,7 @@ document.getElementById('login-form').addEventListener('submit', async function(
     const password = document.getElementById('password').value;
     
     try {
+        console.log('Attempting login for:', email);
         const response = await fetch('login.php', {
             method: 'POST',
             headers: {
@@ -14,19 +15,30 @@ document.getElementById('login-form').addEventListener('submit', async function(
         });
         
         const data = await response.json();
+        console.log('Server response:', data);
         
         if (data.success) {
-            console.log('Logged in as:', data.username);
-            if (data.isAdmin) {
+            console.log('Login successful!');
+            console.log('User details - Username:', data.username, 'isAdmin:', data.isAdmin);
+            
+            // Explicitly check the isAdmin property type and value
+            console.log('isAdmin type:', typeof data.isAdmin);
+            console.log('isAdmin value:', data.isAdmin);
+            
+            // Redirect Admin users to profile.php (admin dashboard) and regular users to home.html
+            if (data.isAdmin === true) {
+                console.log('Redirecting to profile.php (Admin dashboard)');
                 window.location.href = 'profile.php';
             } else {
+                console.log('Redirecting to home.html (Regular user)');
                 window.location.href = 'home.html';
             }
         } else {
+            console.log('Login failed:', data.message);
             showError(data.message);
         }
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error during login process:', error);
         showError('An error occurred. Please try again.');
     }
 });

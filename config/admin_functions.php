@@ -3,6 +3,12 @@ require_once 'database.php';
 require_once 'session.php';
 
 function isAdmin() {
+    // If we already have the admin status in session, use that
+    if (isset($_SESSION['is_admin'])) {
+        return $_SESSION['is_admin'];
+    }
+    
+    // Otherwise, check based on user_id and username
     global $pdo;
     
     if (!isset($_SESSION['user_id'])) {
@@ -13,7 +19,12 @@ function isAdmin() {
     $stmt->execute([$_SESSION['user_id']]);
     $user = $stmt->fetch();
     
-    return isset($user['username']) && $user['username'] === 'Admin';
+    $isAdmin = isset($user['username']) && strtolower($user['username']) === 'admin';
+    
+    // Cache the result in session
+    $_SESSION['is_admin'] = $isAdmin;
+    
+    return $isAdmin;
 }
 
 function deleteUser($userId) {
