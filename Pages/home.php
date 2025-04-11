@@ -38,33 +38,29 @@ try {
     // Log the received category and filter
     error_log("Received category: " . $category . ", filter: " . $filter);
 
-    // Base query changes based on filter
-    switch ($filter) {
-        case 'hot':
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
-                     COUNT(lp.post_id) as like_count
-                     FROM posts p
-                     LEFT JOIN liked_posts lp ON p.post_id = lp.post_id";
-            break;
+    // Base query - select common fields for all filters
+    $baseQuery = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags";
 
-        case 'most-discussed':
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags,
-                     COUNT(c.comment_id) as comment_count
-                     FROM posts p
-                     LEFT JOIN comments c ON p.post_id = c.post_id";
-            break;
+    // Add additional selection fields based on filter
+    if ($filter === 'hot') {
+        $baseQuery .= ", COUNT(lp.post_id) as like_count";
+    } elseif ($filter === 'most-discussed') {
+        $baseQuery .= ", COUNT(c.comment_id) as comment_count";
+    }
 
-        default:
-            $query = "SELECT p.post_id, p.title, p.thumbnail_image, p.created_at, p.author, p.category, p.tags 
-                     FROM posts p";
-            break;
+    // Add the FROM clause with appropriate JOINs
+    $baseQuery .= " FROM posts p";
+    if ($filter === 'hot') {
+        $baseQuery .= " LEFT JOIN liked_posts lp ON p.post_id = lp.post_id";
+    } elseif ($filter === 'most-discussed') {
+        $baseQuery .= " LEFT JOIN comments c ON p.post_id = c.post_id";
     }
 
     // Add WHERE conditions
     $whereConditions = [];
     $params = [];
 
-    if ($category) {
+    if ($category && $category !== '') {
         $whereConditions[] = "LOWER(p.category) = LOWER(:category)";
         $params[':category'] = $category;
     }
@@ -75,28 +71,34 @@ try {
     }
 
     if (!empty($whereConditions)) {
-        $query .= " WHERE " . implode(" AND ", $whereConditions);
+        $baseQuery .= " WHERE " . implode(" AND ", $whereConditions);
     }
 
     // Add GROUP BY and ORDER BY based on filter
+    if ($filter === 'hot' || $filter === 'most-discussed') {
+        $baseQuery .= " GROUP BY p.post_id";
+    }
+
+    // Add ORDER BY clause based on filter
     switch ($filter) {
         case 'hot':
-            $query .= " GROUP BY p.post_id ORDER BY like_count DESC LIMIT 5";
+            $baseQuery .= " ORDER BY like_count DESC";
             break;
-
         case 'most-discussed':
-            $query .= " GROUP BY p.post_id ORDER BY comment_count DESC LIMIT 5";
+            $baseQuery .= " ORDER BY comment_count DESC";
             break;
-
         default:
-            $query .= " ORDER BY p.created_at DESC LIMIT 10";
+            $baseQuery .= " ORDER BY p.created_at DESC";
             break;
     }
 
-    // Log the final query
-    error_log("Executing query: " . $query);
+    // Add LIMIT
+    $baseQuery .= " LIMIT 10";
 
-    $stmt = $pdo->prepare($query);
+    // Log the final query
+    error_log("Executing query: " . $baseQuery);
+
+    $stmt = $pdo->prepare($baseQuery);
     if (!$stmt) {
         throw new Exception("Prepare failed: " . print_r($pdo->errorInfo(), true));
     }
@@ -111,17 +113,21 @@ try {
 
     // Add like and comment counts to the response for all posts
     foreach ($posts as &$post) {
-        // Get like count
-        $likeStmt = $pdo->prepare("SELECT COUNT(*) as like_count FROM liked_posts WHERE post_id = ?");
-        $likeStmt->execute([$post['post_id']]);
-        $likeCount = $likeStmt->fetch(PDO::FETCH_ASSOC);
-        $post['like_count'] = $likeCount['like_count'];
+        // Only get like count if not already fetched by the query
+        if ($filter !== 'hot') {
+            $likeStmt = $pdo->prepare("SELECT COUNT(*) as like_count FROM liked_posts WHERE post_id = ?");
+            $likeStmt->execute([$post['post_id']]);
+            $likeCount = $likeStmt->fetch(PDO::FETCH_ASSOC);
+            $post['like_count'] = $likeCount['like_count'];
+        }
 
-        // Get comment count
-        $commentStmt = $pdo->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
-        $commentStmt->execute([$post['post_id']]);
-        $commentCount = $commentStmt->fetch(PDO::FETCH_ASSOC);
-        $post['comment_count'] = $commentCount['comment_count'];
+        // Only get comment count if not already fetched by the query
+        if ($filter !== 'most-discussed') {
+            $commentStmt = $pdo->prepare("SELECT COUNT(*) as comment_count FROM comments WHERE post_id = ?");
+            $commentStmt->execute([$post['post_id']]);
+            $commentCount = $commentStmt->fetch(PDO::FETCH_ASSOC);
+            $post['comment_count'] = $commentCount['comment_count'];
+        }
     }
 
     // Log the number of posts found

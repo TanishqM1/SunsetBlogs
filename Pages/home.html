@@ -68,31 +68,73 @@
             const postsContainer = document.getElementById('posts-container');
             let allPosts = [];
             let lastPostId = null;
+            let currentFilter = 'recent';
+            let currentCategory = '';
+            let fetchingNewPosts = false;
+            let lastLikeUpdateTime = 0;
+            
+            // Debug function to log state
+            function logState(message) {
+                console.log(`${message} - Filter: ${currentFilter}, Category: ${currentCategory}, Last Post ID: ${lastPostId}`);
+            }
 
             function filterPosts() {
                 const searchTerm = searchInput.value.toLowerCase();
-                const filterValue = filterSelect.value;
-                const categoryValue = categorySelect.value;
-
+                
+                // Client-side filtering for search term only
                 const filteredPosts = allPosts.filter(post => {
-                    const matchesSearch = post.title.toLowerCase().includes(searchTerm);
-                    const matchesCategory = !categoryValue || post.category === categoryValue;
-                    return matchesSearch && matchesCategory;
+                    return post.title.toLowerCase().includes(searchTerm);
                 });
 
                 displayPosts(filteredPosts);
             }
 
+            // Sort posts based on current filter
+            function sortPosts(posts) {
+                // Make a copy to avoid modifying the original array
+                const sortedPosts = [...posts];
+                
+                // Apply proper sorting based on current filter
+                switch(currentFilter) {
+                    case 'hot':
+                        // Sort by like count (descending)
+                        sortedPosts.sort((a, b) => {
+                            const likesA = parseInt(a.like_count) || 0;
+                            const likesB = parseInt(b.like_count) || 0;
+                            return likesB - likesA;
+                        });
+                        break;
+                    case 'most-discussed':
+                        // Sort by comment count (descending)
+                        sortedPosts.sort((a, b) => {
+                            const commentsA = parseInt(a.comment_count) || 0;
+                            const commentsB = parseInt(b.comment_count) || 0;
+                            return commentsB - commentsA;
+                        });
+                        break;
+                    default:
+                        // Sort by date (descending/most recent first)
+                        sortedPosts.sort((a, b) => {
+                            return new Date(b.created_at) - new Date(a.created_at);
+                        });
+                        break;
+                }
+                
+                return sortedPosts;
+            }
+
             function displayPosts(posts) {
-                const postsContainer = document.getElementById('posts-container');
+                // Apply proper sorting before displaying
+                const sortedPosts = sortPosts(posts);
+                
                 postsContainer.innerHTML = '';
 
-                if (posts.length === 0) {
+                if (sortedPosts.length === 0) {
                     postsContainer.innerHTML = '<div class="no-posts">No posts found</div>';
                     return;
                 }
 
-                posts.forEach(post => {
+                sortedPosts.forEach(post => {
                     const postElement = document.createElement('div');
                     postElement.className = 'post-card';
                     postElement.dataset.postId = post.post_id;
@@ -121,119 +163,120 @@
                     postsContainer.appendChild(postElement);
                 });
                 
-                // Update lastPostId
-                if (posts.length > 0) {
-                    lastPostId = Math.max(...posts.map(post => parseInt(post.post_id)));
+                // Update lastPostId for fetching new posts
+                if (sortedPosts.length > 0) {
+                    const postIds = sortedPosts.map(post => parseInt(post.post_id));
+                    lastPostId = Math.max(...postIds);
                 }
+                
+                logState("Posts displayed");
+            }
+
+            // Function to build URL with current filters
+            function buildFilteredUrl(baseUrl) {
+                const params = new URLSearchParams();
+                
+                // Always include the current filter and category if they're set
+                if (currentFilter !== 'recent') {
+                    params.append('filter', currentFilter);
+                }
+                if (currentCategory) {
+                    params.append('category', currentCategory);
+                }
+                
+                // If there are parameters, add them to the URL
+                if (params.toString()) {
+                    return baseUrl + '?' + params.toString();
+                }
+                
+                return baseUrl;
             }
 
             // Function to fetch new posts
             function fetchNewPosts() {
-                fetch('fetch_new_posts.php?last_post_id=' + lastPostId)
+                if (fetchingNewPosts) {
+                    return; // Skip if we're already fetching new posts
+                }
+                
+                fetchingNewPosts = true;
+                
+                // Build URL with all current filters
+                let url = 'fetch_new_posts.php?last_post_id=' + lastPostId;
+                
+                // Add current filter and category to the new posts request
+                if (currentFilter !== 'recent') {
+                    url += '&filter=' + currentFilter;
+                }
+                if (currentCategory) {
+                    url += '&category=' + encodeURIComponent(currentCategory);
+                }
+                
+                logState("Fetching new posts");
+                
+                fetch(url)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success && data.posts && data.posts.length > 0) {
                             // Add new posts to allPosts array
+                            let postsAdded = false;
+                            
                             data.posts.forEach(newPost => {
                                 // Check if post already exists in allPosts
                                 const existingPostIndex = allPosts.findIndex(post => post.post_id === newPost.post_id);
                                 if (existingPostIndex === -1) {
-                                    allPosts.unshift(newPost);
-                                    
-                                    // Add the new post to the DOM
-                                    const postElement = document.createElement('div');
-                                    postElement.className = 'post-card';
-                                    postElement.dataset.postId = newPost.post_id;
-                                    postElement.innerHTML = `
-                                        <div class="post-image" style="background-image: url('${newPost.thumbnail_image ? '../../file_uploads/' + newPost.thumbnail_image.split('/').pop() : '../Images/sun.png'}')">
-                                            ${!newPost.thumbnail_image ? '<div class="no-image">Sunset Blogs</div>' : ''}
-                                        </div>
-                                        <div class="post-content">
-                                            <a href="view-blog.php?id=${newPost.post_id}">
-                                                <h2>${newPost.title}</h2>
-                                            </a>
-                                            <div class="post-meta">
-                                                <span>By ${newPost.author}</span>
-                                                <span>${new Date(newPost.created_at).toLocaleDateString()}</span>
-                                            </div>
-                                            <div class="post-stats">
-                                                <span class="likes" data-post-id="${newPost.post_id}">❤ ${newPost.like_count || 0} likes</span>
-                                                <span class="comments">💬 ${newPost.comment_count || 0} comments</span>
-                                            </div>
-                                            <div class="post-tags">
-                                                <span class="category">${newPost.category}</span>
-                                                ${newPost.tags ? `<span class="tags">${newPost.tags}</span>` : ''}
-                                            </div>
-                                        </div>
-                                    `;
-                                    
-                                    // Add the new post at the top of the container
-                                    if (postsContainer.firstChild) {
-                                        postsContainer.insertBefore(postElement, postsContainer.firstChild);
-                                    } else {
-                                        postsContainer.appendChild(postElement);
-                                    }
+                                    allPosts.push(newPost);
+                                    postsAdded = true;
                                 }
                             });
                             
                             // Update lastPostId
-                            lastPostId = Math.max(...data.posts.map(post => parseInt(post.post_id)), lastPostId);
+                            const newPostIds = data.posts.map(post => parseInt(post.post_id));
+                            lastPostId = Math.max(...newPostIds, lastPostId);
+                            
+                            if (postsAdded) {
+                                // Re-sort and display all posts to maintain proper order
+                                displayPosts(allPosts);
+                                logState("New posts added and display refreshed");
+                            }
                         }
+                        fetchingNewPosts = false;
                     })
-                    .catch(error => console.error('Error fetching new posts:', error));
+                    .catch(error => {
+                        console.error('Error fetching new posts:', error);
+                        fetchingNewPosts = false;
+                    });
             }
 
             // Add event listeners for filtering
             searchInput.addEventListener('input', filterPosts);
+            
             filterSelect.addEventListener('change', function() {
-                const selectedFilter = filterSelect.value;
-                const selectedCategory = categorySelect.value;
+                // Update the current filter
+                currentFilter = filterSelect.value;
+                currentCategory = categorySelect.value;
                 
-                // Build URL with both filter and category parameters
-                let url = 'fetch_posts.php';
-                const params = new URLSearchParams();
+                logState("Filter changed");
                 
-                if (selectedFilter !== 'recent') {
-                    params.append('filter', selectedFilter);
-                }
-                if (selectedCategory) {
-                    params.append('category', selectedCategory);
-                }
-                
-                if (params.toString()) {
-                    url += '?' + params.toString();
-                }
-                
-                // Fetch posts with filter
-                fetchPosts(url);
+                // Fetch posts with current filter settings
+                fetchPosts(buildFilteredUrl('fetch_posts.php'));
             });
 
             // Add event listener for category dropdown
             categorySelect.addEventListener('change', function() {
-                const selectedFilter = filterSelect.value;
-                const selectedCategory = categorySelect.value;
+                // Update the current category
+                currentFilter = filterSelect.value;
+                currentCategory = categorySelect.value;
                 
-                // Build URL with both filter and category parameters
-                let url = 'fetch_posts.php';
-                const params = new URLSearchParams();
+                logState("Category changed");
                 
-                if (selectedFilter !== 'recent') {
-                    params.append('filter', selectedFilter);
-                }
-                if (selectedCategory) {
-                    params.append('category', selectedCategory);
-                }
-                
-                if (params.toString()) {
-                    url += '?' + params.toString();
-                }
-                
-                // Fetch posts with filter
-                fetchPosts(url);
+                // Fetch posts with current filter settings
+                fetchPosts(buildFilteredUrl('fetch_posts.php'));
             });
 
             // Function to fetch and display posts
             function fetchPosts(url) {
+                logState("Fetching posts with URL: " + url);
+                
                 fetch(url)
                     .then(response => {
                         if (!response.ok) {
@@ -265,51 +308,77 @@
                     });
             }
 
-            // Update like counts
+            // Update like counts with current filter
             function updateLikes() {
+                // Rate limiting - don't update more than once per second
+                const now = Date.now();
+                if (now - lastLikeUpdateTime < 1000) {
+                    return;
+                }
+                
+                lastLikeUpdateTime = now;
+                
                 fetch('fetch_likes.php')
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
+                            let likesUpdated = false;
+                            
                             // Update the like counts in the allPosts array
                             allPosts.forEach(post => {
                                 const likeInfo = data.likes.find(like => like.post_id == post.post_id);
+                                const oldLikeCount = post.like_count || 0;
+                                
                                 if (likeInfo) {
                                     post.like_count = likeInfo.like_count;
+                                    if (oldLikeCount != likeInfo.like_count) {
+                                        likesUpdated = true;
+                                    }
                                 } else {
                                     // If no likes found for this post, set to 0
                                     post.like_count = 0;
+                                    if (oldLikeCount != 0) {
+                                        likesUpdated = true;
+                                    }
                                 }
                             });
                             
-                            // Update the DOM
-                            data.likes.forEach(like => {
-                                const likeElements = document.querySelectorAll(`.likes[data-post-id="${like.post_id}"]`);
-                                likeElements.forEach(element => {
-                                    element.textContent = `❤ ${like.like_count} likes`;
-                                });
-                            });
-                            
-                            // Update elements for posts with 0 likes (that may have been unliked)
-                            allPosts.forEach(post => {
-                                if (!data.likes.some(like => like.post_id == post.post_id)) {
-                                    const likeElements = document.querySelectorAll(`.likes[data-post-id="${post.post_id}"]`);
+                            // If likes were updated and we're using the "hot" filter, re-sort and display
+                            if (likesUpdated && currentFilter === 'hot') {
+                                displayPosts(allPosts);
+                                logState("Likes updated, display refreshed for 'hot' filter");
+                            } else {
+                                // Just update the DOM without re-sorting
+                                data.likes.forEach(like => {
+                                    const likeElements = document.querySelectorAll(`.likes[data-post-id="${like.post_id}"]`);
                                     likeElements.forEach(element => {
-                                        element.textContent = `❤ 0 likes`;
+                                        element.textContent = `❤ ${like.like_count} likes`;
                                     });
-                                }
-                            });
+                                });
+                                
+                                // Update elements for posts with 0 likes (that may have been unliked)
+                                allPosts.forEach(post => {
+                                    if (!data.likes.some(like => like.post_id == post.post_id)) {
+                                        const likeElements = document.querySelectorAll(`.likes[data-post-id="${post.post_id}"]`);
+                                        likeElements.forEach(element => {
+                                            element.textContent = `❤ 0 likes`;
+                                        });
+                                    }
+                                });
+                            }
                         }
                     })
-                    .catch(error => console.error('Error updating likes:', error));
+                    .catch(error => {
+                        console.error('Error updating likes:', error);
+                    });
             }
 
-            // Initial fetch of posts
+            // Initial fetch of posts with default settings
             fetchPosts('fetch_posts.php');
 
             // Periodically check for new posts and updated likes
             setInterval(fetchNewPosts, 5000); // Check every 5 seconds
-            setInterval(updateLikes, 5000); // Check every 5 seconds
+            setInterval(updateLikes, 1000); // Check every 1 second for like updates
         });
     </script>
 </body>
