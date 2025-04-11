@@ -102,5 +102,30 @@
     <p>&copy; 2025 Sunset Blogs. All rights reserved.</p>
     <p>Sunset Blogs is a platform for sharing ideas, experiences, and creative writing.</p>
   </footer>
+
+  <script>
+    function addSubtitle() {
+      const container = document.getElementById('subtitle-container');
+      const subtitleCount = container.children.length + 1;
+      
+      const subtitleGroup = document.createElement('div');
+      subtitleGroup.className = 'subtitle-group';
+      
+      subtitleGroup.innerHTML = `
+        <button type="button" class="btn-delete-subtitle" onclick="removeSubtitle(this)">×</button>
+        <label for="subtitle${subtitleCount}" class="required">Subtitle</label>
+        <input type="text" id="subtitle${subtitleCount}" name="subtitles[]" placeholder="Enter your subtitle" required />
+        <label for="content${subtitleCount}" class="required">Content</label>
+        <textarea id="content${subtitleCount}" name="subtitles-content[]" rows="4" placeholder="Write content for this subtitle" required></textarea>
+      `;
+      
+      container.appendChild(subtitleGroup);
+    }
+    
+    function removeSubtitle(button) {
+      const subtitleGroup = button.parentElement;
+      subtitleGroup.remove();
+    }
+  </script>
 </body>
 </html>
