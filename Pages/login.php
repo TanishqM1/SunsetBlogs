@@ -48,12 +48,12 @@ try {
 
     // Check if user is admin
     $isAdmin = ($user['username'] === 'Admin');
-    if ($isAdmin){header('Location: profile.php');}
-    else{header('Location: home.html');}
+    
 
     respond(true, [
         'username' => $user['username'],
         'isAdmin' => $isAdmin
+        'redirect' => $isAdmin ? 'profile.php' : 'your-work.php'
     ]);
 
 } catch (Exception $e) {
