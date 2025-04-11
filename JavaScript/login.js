@@ -17,7 +17,11 @@ document.getElementById('login-form').addEventListener('submit', async function(
         
         if (data.success) {
             console.log('Logged in as:', data.username);
-            window.location.href = 'home.html';
+            if (data.isAdmin) {
+                window.location.href = 'profile.php';
+            } else {
+                window.location.href = 'home.html';
+            }
         } else {
             showError(data.message);
         }

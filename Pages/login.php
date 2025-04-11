@@ -46,7 +46,13 @@ try {
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['username'] = $user['username'];
 
-    respond(true, ['username' => $user['username']]);
+    // Check if user is admin
+    $isAdmin = ($user['username'] === 'Admin');
+
+    respond(true, [
+        'username' => $user['username'],
+        'isAdmin' => $isAdmin
+    ]);
 
 } catch (Exception $e) {
     respond(false, ['message' => 'Server error: ' . $e->getMessage()]);
