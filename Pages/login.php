@@ -48,6 +48,7 @@ try {
 
     // Check if user is admin
     $isAdmin = ($user['username'] === 'Admin');
+    
 
     respond(true, [
         'username' => $user['username'],

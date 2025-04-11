@@ -40,10 +40,16 @@ try {
     // Handle blog image upload if provided
     $blog_image_path = null;
     if (isset($_FILES['blog_image']) && $_FILES['blog_image']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = '../uploads/';
+        $upload_dir = '../../file_uploads/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        
         $file_extension = pathinfo($_FILES['blog_image']['name'], PATHINFO_EXTENSION);
         $blog_image_filename = uniqid() . '.' . $file_extension;
-        $blog_image_path = 'uploads/' . $blog_image_filename;
+        $blog_image_path = '../file_uploads/' . $blog_image_filename;
         
         move_uploaded_file($_FILES['blog_image']['tmp_name'], $upload_dir . $blog_image_filename);
     }
@@ -51,10 +57,16 @@ try {
     // Handle thumbnail image upload if provided
     $thumbnail_image_path = null;
     if (isset($_FILES['thumbnail_image']) && $_FILES['thumbnail_image']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = '../uploads/';
+        $upload_dir = '../../file_uploads/';
+        
+        // Create directory if it doesn't exist
+        if (!file_exists($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        
         $file_extension = pathinfo($_FILES['thumbnail_image']['name'], PATHINFO_EXTENSION);
         $thumbnail_filename = uniqid() . '.' . $file_extension;
-        $thumbnail_image_path = 'uploads/' . $thumbnail_filename;
+        $thumbnail_image_path = '../file_uploads/' . $thumbnail_filename;
         
         move_uploaded_file($_FILES['thumbnail_image']['tmp_name'], $upload_dir . $thumbnail_filename);
     }
