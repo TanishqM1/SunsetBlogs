@@ -191,8 +191,8 @@ These updates occur without requiring page reloads, enhancing the user experienc
 
 For testing purposes, two pre-created accounts are available:
 - **Admin Account**: 
-  - Email: Admin@gmail.com 
-  - Password: Admin123
+ -Contact Admin for info
+  
 - **Sample User Account**: 
   - Email: raad.sask@gmail.com 
   - Password: Raad7223
