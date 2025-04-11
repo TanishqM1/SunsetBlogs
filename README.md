@@ -192,7 +192,7 @@ For testing purposes, two pre-created accounts are available:
 - **Admin Account**:
   -Contact Admin for info
   
-- **Sample User Account**: 
+- **Sample User Account**:  <br> 
   - Email: raad.sask@gmail.com 
   - Password: Raad7223
 
