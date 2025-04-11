@@ -1,143 +1,216 @@
-# 🌅 Sunset Blogs
+# Sunset Blogs
 
-A modern, responsive blogging platform designed for creative writers and content creators. Sunset Blogs provides an intuitive interface for writing, sharing, and discovering engaging content.
+A dynamic blog platform where users can create, share, and engage with content in a vibrant community of writers and readers.
 
-## 📋 Features
+## Project Overview
 
-### For Writers
-- **Create & Manage Posts**
-  - Rich text editor for blog creation
-  - Support for multiple subtitles and sections
-  - Image upload functionality
-  - Tag and categorize your content
-  - Save drafts and publish when ready
+Sunset Blogs is a full-featured blogging platform that allows users to:
+- Create and manage personal accounts with profile images
+- Write and publish blogs with rich content
+- Discover content from other users
+- Like and comment on posts
+- Follow other users
+- Contact site administrators
+- Search for users and content
 
-### For Readers
-- **Discover Content**
-  - Browse featured blogs on the homepage
-  - Filter content by categories
-  - Search for specific topics or authors
-  - Like and share favorite posts
+The platform includes both regular user and administrative functionality with real-time updates for comments, posts, and likes.
+
+## Technologies Used
+
+### Frontend
+- HTML5
+- CSS3 with responsive design
+- JavaScript (ES6+)
+- Asynchronous updates using AJAX/Fetch API
+
+### Backend
+- PHP 7+
+- MySQL Database
+- PDO for database interactions
+- Session management for authentication
+
+### Security Features
+- Client-side form validation
+- Password hashing and security
+- Prepared SQL statements
+- Input sanitization
+- Session protection
+
+## Detailed Website Features
+
+### Authentication
+- User signup with form validation and mandatory profile picture upload
+- Password requirements include minimum 8 characters, letters and digits
+- Profile images are stored as filepaths in the database
+- User login with secure session creation
+- Guest login (limited to viewing blogs, other actions prompt sign-in)
+- Logout functionality
+
+### User Profile & Blog Posts
+- Profile page displays user information retrieved from database
+- Profile editing (username, email, password, and profile picture)
+- Create blog posts with metadata (title, subtitles, media links, images, tags, categories)
+- View and interact with individual blog posts through comments/likes
+
+### Home Page
+- Filter posts by recency, popularity, discussion, category, or user-specific content
+- Dynamic post fetching using AJAX without page reload
+- Posts displayed with thumbnails and images when available
+- Real-time search functionality to filter posts by metadata
+
+### Admin Features
+- Delete users or posts
+- Edit blogs created by any user
+- View site statistics and metrics over time (new users, posts, and various averages)
+- Search for users by username, email, or post content
+
+### Contact System
+- Both users and guests can submit inquiries
+- Messages are stored in the database for developer access
+
+## Key Features
 
 ### User Features
-- **Profile Management**
-  - Customizable user profiles
-  - Track your published content
-  - View your reading history
-  - Manage your account settings
+- Account creation and management
+- Profile customization with image uploads
+- Blog creation and editing
+- Comment and like functionality
+- User following system
+- Content discovery based on categories and tags
+- Real-time updates without page reloads
 
-### Social Features
-- **Community Engagement**
-  - Comment on blog posts
-  - Follow favorite authors
-  - Share posts on social media
-  - Subscribe to newsletter updates
+### Admin Features
+- User management (search, view, delete)
+- Content moderation
+- Site statistics and analytics
+- Usage reports with filtering options
 
-## 🎨 Design Features
-- Modern, clean interface
-- Responsive design for all devices
-- Custom animated logo
-- Consistent color scheme using CSS variables
-- Intuitive navigation
-- Accessibility-focused design
+## File Structure Breakdown
 
-## 🛠️ Technical Stack
-- HTML5
-- CSS3 (with custom properties/variables)
-- JavaScript
-- Responsive Design
-- Mobile-First Approach
+### Signup System
+- **signup.html**: User-facing form for registration
+- **signup.js**: Handles client-side validation for registration
+- **signup-validation.js**: Performs detailed validation of form fields
+- **signup.php**: Processes registration, hashes passwords, uploads images
 
-## 📁 Project Structure
-```
-SunsetBlogs/
-├── CSS/
-│   ├── theme.css          # Global theme variables
-│   ├── index.css          # Homepage styles
-│   ├── contact.css        # Contact page styles
-│   ├── create-blog.css    # Blog creation styles
-│   ├── profile.css        # Profile page styles
-│   ├── signup.css         # Signup page styles
-│   └── view-blog.css      # Blog viewing styles
-├── JavaScript/
-│   ├── blog-validation.js # Blog form validation
-│   ├── Contact_Validate.js# Contact form validation
-│   └── signup-validation.js# Signup form validation
-├── Pages/
-│   ├── contact.html       # Contact page
-│   ├── create-blog.html   # Create blog page
-│   ├── profile.html       # User profile page
-│   ├── signup.html        # Signup page
-│   ├── view-blog.html     # Blog viewing page
-│   └── your-work.html     # User's blogs page
-└── index.html             # Homepage
-```
+### Login System
+- **login.html**: Frontend layout for user login
+- **login.js**: Handles credential submission and displays errors
+- **login.php**: Processes credentials and creates user sessions
+- **set_guest_session.php**: Creates limited guest sessions
+- **logout.php**: Destroys active sessions
 
-## 🚀 Getting Started
+### Homepage System
+- **home.html**: Dashboard for logged-in users with filtering options
+- **home_guest.html**: Limited view for guests
+- **home.php**: Session validation and request routing
+- **fetch_posts.php**: Creates SQL queries for filtered content
+- **fetch_new_posts.php**: Real-time post updates
 
-### Prerequisites
-- A modern web browser (Chrome, Firefox, Safari, or Edge)
-- Basic understanding of web technologies
+### User Dashboard
+- **your-work.php**: Displays user's created and liked content
 
-### Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/SunsetBlogs.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd SunsetBlogs
-   ```
-3. Open `index.html` in your web browser to view the site
+### Profile System
+- **profile.php**: Displays user information and admin dashboard
+- **update_profile.php**: Handles profile modifications
+- **profile_script.js**: Client-side profile validation
 
-### Development
-1. Make sure all CSS files are properly linked in their respective HTML files
-2. Use the theme variables defined in `theme.css` for consistent styling
-3. Follow the existing naming conventions for classes and IDs
-4. Test all changes across different screen sizes
+### Blog Systems
+- **view-blog.php**: Displays full blog content with comments
+- **create-blog.html**: Interface for blog creation
+- **create_post.php**: Processes new blog posts
+- **blog-validation.js**: Validates blog content
+- **like_post.php**: Handles post liking functionality
+- **add_comment.php**: Processes comment submissions
 
-## 🎨 Color Scheme
-The website uses a consistent color scheme defined in `theme.css`:
-- Primary Color: Used for main actions and highlights
-- Secondary Color: Used for supporting elements
-- Light Color: Used for backgrounds and subtle elements
-- Dark Color: Used for text and important elements
-- Border Color: Used for separators and boundaries
+### Admin System
+- **admin_actions.php**: Backend support for admin tasks
+- **delete_post.php**: Removes posts from database
+- **delete_user.php**: Removes users and associated data
+- **admin_functions.php**: Helper functions for admin operations
 
-## 📱 Responsive Design
-The website is fully responsive with breakpoints at:
-- Mobile: < 768px
-- Tablet: 768px - 1024px
-- Desktop: > 1024px
+### Auxiliary Files
+- **auth_check.php**: Session verification for protected routes
+- **database.php**: Database connection management
+- **contact.html/contact_guest.html**: Contact form interfaces
+- **contact.js**: Validates contact submissions
+- **contact.php**: Processes contact form data
 
-## 🔒 Security Features
-- Form validation for all user inputs
-- Secure password requirements
-- Protected user data
-- CSRF protection
-- Input sanitization
+## Database Structure
 
-## 🔄 Future Updates
-- [ ] User authentication system
-- [ ] Rich text editor integration
-- [ ] Image optimization
-- [ ] Comment moderation system
-- [ ] Social media integration
-- [ ] Dark mode support
+The system uses a MySQL database with the following main tables:
+- `users`: Stores user account information
+- `posts`: Contains all blog post content
+- `comments`: Stores user comments on posts
+- `likes`: Tracks post likes by users
+- `followers`: Manages user following relationships
+- `inquiry`: Stores user contact form submissions
 
-## 👥 Contributing
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Installation and Setup
 
-## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details
+1. Clone the repository to your web server directory
+2. Import the SQL schema from the `SQL/tables.txt` file
+3. Configure the database connection in `config/database.php`
+4. Ensure your web server has PHP 7+ and MySQL installed
+5. Set appropriate read/write permissions for the `uploads` directory
 
-## 👏 Acknowledgments
-- Icons and emojis from [Unicode Emoji](https://unicode.org/emoji/charts/full-emoji-list.html)
-- Images from [Unsplash](https://unsplash.com/)
-- Fonts from Google Fonts
-- Special thanks to all contributors
+## System Architecture
 
+The system follows a structured architecture:
+- `config/`: Contains database connection and core functions
+- `CSS/`: Stylesheets for the application
+- `JavaScript/`: Client-side validation and asynchronous functionality
+- `Pages/`: PHP and HTML templates for different sections
+- `SQL/`: Database schema and queries
+- `uploads/`: Directory for user uploaded images
+
+## Security Implementation
+
+### Client-side Security
+- Input validation for all forms
+- Password strength requirements
+- XSS prevention through input sanitization
+
+### Server-side Security
+- Prepared statements for all database queries
+- Password hashing for user credentials
+- Session management with secure cookies
+- Protection against SQL injection
+
+## Asynchronous Functionality
+
+The platform implements real-time updates for:
+- New posts appearing on the home feed
+- Comments on blog posts
+- Like counts and status
+- User search results
+
+These updates occur without requiring page reloads, enhancing the user experience.
+
+## Testing Credentials
+
+For testing purposes, two pre-created accounts are available:
+- **Admin Account**: 
+  - Email: Admin@gmail.com 
+  - Password: Admin123
+- **Sample User Account**: 
+  - Email: raad.sask@gmail.com 
+  - Password: Raad7223
+
+## Live Demo
+
+The live version of this project is available at: [https://cosc360.ok.ubc.ca/kmercha1/SunsetBlogs/](https://cosc360.ok.ubc.ca/kmercha1/SunsetBlogs/)
+
+## Known Limitations
+
+- Image uploads are limited to common formats (JPEG, PNG, GIF)
+- Rich text formatting is basic
+- Mobile responsiveness may have minor issues on certain devices
+
+## Contributors
+
+This project was developed by the Sunset Blogs team as part of the COSC 360 course at UBC Okanagan.
+
+## License
+
+All rights reserved. This project is part of an academic assignment and is not licensed for redistribution or commercial use.
