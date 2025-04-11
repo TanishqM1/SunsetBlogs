@@ -53,7 +53,6 @@ try {
     respond(true, [
         'username' => $user['username'],
         'isAdmin' => $isAdmin
-        'redirect' => $isAdmin ? 'profile.php' : 'your-work.php'
     ]);
 
 } catch (Exception $e) {
