@@ -201,16 +201,6 @@ For testing purposes, two pre-created accounts are available:
 
 The live version of this project is available at: [https://cosc360.ok.ubc.ca/kmercha1/SunsetBlogs/](https://cosc360.ok.ubc.ca/kmercha1/SunsetBlogs/)
 
-## Known Limitations
 
-- Image uploads are limited to common formats (JPEG, PNG, GIF)
-- Rich text formatting is basic
-- Mobile responsiveness may have minor issues on certain devices
 
-## Contributors
 
-This project was developed by the Sunset Blogs team as part of the COSC 360 course at UBC Okanagan.
-
-## License
-
-All rights reserved. This project is part of an academic assignment and is not licensed for redistribution or commercial use.
