@@ -1,6 +1,7 @@
 # Sunset Blogs
 
 A dynamic blog platform where users can create, share, and engage with content in a vibrant community of writers and readers.
+The live version of this project is available at: https://cosc360.ok.ubc.ca/kmercha1/SunsetBlogs/
 
 ## Project Overview
 
